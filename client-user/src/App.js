@@ -2,10 +2,11 @@ import React from 'react';
 
 //maybe move this into another component
 
-function App() {
+function App(props) {
+
+  const session = props.match.params.session
+
   //could control state of current location or could just send onclick
-
-
   const sendLocation = () => {
 
     const success = (position) => {
@@ -13,7 +14,8 @@ function App() {
       const longitude = position.coords.longitude
       const location = {"lat": latitude, "long": longitude}
 
-      fetch('http://localhost:3001/add-location', {
+      //how to make it fetch the appropriate url? grab the current url and extract a string and store it in state?
+      fetch(`http://localhost:3001/${session}/add-location`, {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(location)
