@@ -16,10 +16,13 @@ app.get('/view-locations', (req,res) => {
 })
 
 //set up post to add the lat/long to the db
-app.post('/add-location', async (req,res) => {
+app.post('/:session/add-location', async (req,res) => {
+    const session = req.params.session
+    //not really sure I need to turn this into an object
     const location = new Location(req.body.lat, req.body.long)
 
     let locationObj = await models.DesiredCoordinate.create({
+        session: session,
         latitude: location.lat,
         longitude: location.long
     })

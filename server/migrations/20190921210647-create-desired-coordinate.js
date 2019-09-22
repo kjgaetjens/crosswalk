@@ -8,6 +8,10 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
+      session: {
+        allowNull: false,
+        type: Sequelize.STRING
+      },
       latitude: {
         type: Sequelize.DECIMAL
       },
