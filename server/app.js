@@ -8,21 +8,69 @@ const Location = require('./classes/location')
 app.use(cors())
 app.use(express.json())
 
+app.get('/sessions/:sessionid', async (req,res) => {
 
+    const sessionId = parseInt(req.params.sessionid)
+
+    let sessionRecord = await models.Session.findOne(
+        {where:{id: sessionId}}
+    )
+
+    res.json(sessionRecord)
+})
+
+app.post('/add-session', async (req,res) => {
+
+    const param = req.body.param
+    const status = req.body.status
+
+    let sessionRecord = await models.Session.create({
+        param: param,
+        status: status
+    })
+
+    res.status(200).send() 
+})
+
+app.post('/start-session', async (req,res) => {
+
+    const sessionId = req.body.sessionId
+
+    let activateRecord = await models.Session.update(
+        {status: 'ACTIVE'},
+        {where: {id: sessionId} }
+    )
+
+    res.status(200).send() 
+})
+
+app.post('/stop-session', async (req,res) => {
+
+    const sessionId = req.body.sessionId
+
+    let activateRecord = await models.Session.update(
+        {status: 'INACTIVE'},
+        {where: {id: sessionId} }
+    )
+
+    res.status(200).send() 
+})
 
 //this will be for the admin side
 app.get('/view-locations', (req,res) => {
     res.send('get test')
 })
 
+
 //set up post to add the lat/long to the db
-app.post('/:session/add-location', async (req,res) => {
-    const session = req.params.session
+app.post('/:sessionid/add-location', async (req,res) => {
+    //should grab this sesison and then find the associated id and actually store that in the location obj
+    const sessionId = req.params.sessionid
     //not really sure I need to turn this into an object
     const location = new Location(req.body.lat, req.body.long)
 
-    let locationObj = await models.DesiredCoordinate.create({
-        session: session,
+    let locationRecord = await models.DesiredCoordinate.create({
+        session: sessionId,
         latitude: location.lat,
         longitude: location.long
     })
