@@ -63,14 +63,18 @@ app.get('/view-locations', (req,res) => {
 
 
 //set up post to add the lat/long to the db
-app.post('/:sessionid/add-location', async (req,res) => {
-    //should grab this sesison and then find the associated id and actually store that in the location obj
-    const sessionId = req.params.sessionid
+app.post('/add-location', async (req,res) => {
+    const sessionParam = req.body.sessionname
+    const sessionRecord = await models.Session.findOne(
+        {where:{param: sessionParam}}
+    )
+    const sessionId = await sessionRecord.id
+
     //not really sure I need to turn this into an object
     const location = new Location(req.body.lat, req.body.long)
 
     let locationRecord = await models.DesiredCoordinate.create({
-        session: sessionId,
+        sessionId: sessionId,
         latitude: location.lat,
         longitude: location.long
     })
