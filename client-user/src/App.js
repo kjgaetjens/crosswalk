@@ -12,13 +12,12 @@ function App(props) {
     const success = (position) => {
       const latitude = position.coords.latitude
       const longitude = position.coords.longitude
-      const location = {"lat": latitude, "long": longitude}
 
       //how to make it fetch the appropriate url? grab the current url and extract a string and store it in state?
-      fetch(`http://localhost:3001/${session}/add-location`, {
+      fetch(`http://localhost:3001/add-location`, {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(location)
+        body: JSON.stringify({"sessionname": session, "lat": latitude, "long": longitude})
       })
 
       //update status to say it was sent succesfully
