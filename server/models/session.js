@@ -5,7 +5,7 @@ module.exports = (sequelize, DataTypes) => {
     status: DataTypes.STRING
   }, {});
   Session.associate = function(models) {
-    // associations can be defined here
+    Session.hasMany(models.DesiredCoordinate, {as : 'DesiredCoordinates', foreignKey: 'sessionId'})
   };
   return Session;
 };
