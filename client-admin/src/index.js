@@ -1,10 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {BrowserRouter, Route, Switch} from 'react-router-dom'
+import {BrowserRouter, Route} from 'react-router-dom'
 import './index.css';
-import App from './App';
+// import App from './App';
 import AddSession from './components/AddSession'
-import Sessions from './components/Sessions'
+// import Sessions from './components/Sessions'
 import Session from './components/Session'
 import * as serviceWorker from './serviceWorker';
 
