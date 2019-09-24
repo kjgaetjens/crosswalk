@@ -41,23 +41,25 @@ app.get('/sessions/:sessionid/dashboard', async (req,res) => {
     //figure out what the radius represents (coordinates?)
     let clusters = dbscan.run(coordinates, radius, minPoints)
 
-    let clustersCoordinates = clusters.map(cluster => {
+    let clusterObj = clusters.map(cluster => {
         let clusterCoordinates = []
         cluster.forEach(coordinateOrder => {
             clusterCoordinates.push({"latitude": parseInt(coordinates[coordinateOrder][0]), "longitude": parseInt(coordinates[coordinateOrder][1])})
         })
-        return clusterCoordinates
+        return {"count": clusterCoordinates.length, "coordinates": clusterCoordinates}
     })
 
     let noise = dbscan.noise
+
     let noiseCoordinates = noise.map(noiseOrder => {
         return {"latitude": parseInt(coordinates[noiseOrder][0]), "longitude": parseInt(coordinates[noiseOrder][1])}
     })
+    let noiseObj = {"count": noiseCoordinates.length, "coordinates": noiseCoordinates}
 
-    let clusterObj = {"clusters": clustersCoordinates, "noise": noiseCoordinates}
+    let clusterNoiseObj = {"clusters": clusterObj, "noise": noiseObj}
     
 
-    res.json(clusterObj)
+    res.json(clusterNoiseObj)
 })
 
 app.post('/add-session', async (req,res) => {
