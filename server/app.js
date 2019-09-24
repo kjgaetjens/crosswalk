@@ -4,6 +4,11 @@ const app = express()
 global.models = require('./models')
 const PORT = 3001
 const Location = require('./classes/location')
+var clustering = require('density-clustering')
+var dbscan = new clustering.DBSCAN()
+
+// https://github.com/uhho/density-clustering/blob/master/README.md
+
 
 app.use(cors())
 app.use(express.json())
@@ -17,6 +22,27 @@ app.get('/sessions/:sessionid', async (req,res) => {
     )
 
     res.json(sessionRecord)
+})
+
+app.get('/sessions/:sessionid/dashboard', async (req,res) => {
+
+    const sessionId = parseInt(req.params.sessionid)
+
+    let desiredCoordinateRecords = await models.DesiredCoordinate.findAll(
+        {where:{sessionId: sessionId}}
+    )
+
+    let coordinates = desiredCoordinateRecords.map(record => {
+        return [record.latitude, record.longitude]
+    })
+
+    //figure out what the radius represents (coordinates?)
+    //make these variables. dataset is the session coordinates, 5 is the radius, 2 is minimum number of coordinates for clustering
+    let clusters = dbscan.run(coordinates, 5, 2)
+    console.log(clusters, dbscan.noise)
+    
+
+    res.send('test')
 })
 
 app.post('/add-session', async (req,res) => {
