@@ -27,6 +27,8 @@ app.get('/sessions/:sessionid', async (req,res) => {
 app.get('/sessions/:sessionid/dashboard', async (req,res) => {
 
     const sessionId = parseInt(req.params.sessionid)
+    const radius = req.body.radius
+    const minPoints = req.body.minPoints
 
     let desiredCoordinateRecords = await models.DesiredCoordinate.findAll(
         {where:{sessionId: sessionId}}
@@ -37,12 +39,25 @@ app.get('/sessions/:sessionid/dashboard', async (req,res) => {
     })
 
     //figure out what the radius represents (coordinates?)
-    //make these variables. dataset is the session coordinates, 5 is the radius, 2 is minimum number of coordinates for clustering
-    let clusters = dbscan.run(coordinates, 5, 2)
-    console.log(clusters, dbscan.noise)
+    let clusters = dbscan.run(coordinates, radius, minPoints)
+
+    let clustersCoordinates = clusters.map(cluster => {
+        let clusterCoordinates = []
+        cluster.forEach(coordinateOrder => {
+            clusterCoordinates.push({"latitude": parseInt(coordinates[coordinateOrder][0]), "longitude": parseInt(coordinates[coordinateOrder][1])})
+        })
+        return clusterCoordinates
+    })
+
+    let noise = dbscan.noise
+    let noiseCoordinates = noise.map(noiseOrder => {
+        return {"latitude": parseInt(coordinates[noiseOrder][0]), "longitude": parseInt(coordinates[noiseOrder][1])}
+    })
+
+    let clusterObj = {"clusters": clustersCoordinates, "noise": noiseCoordinates}
     
 
-    res.send('test')
+    res.json(clusterObj)
 })
 
 app.post('/add-session', async (req,res) => {
