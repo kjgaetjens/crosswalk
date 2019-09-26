@@ -209,7 +209,7 @@ function Dashboard(props) {
 
             <CSVLink filename={"raw.csv"} data={rawCsvData.content}>Download Raw Data</CSVLink>
             <CSVLink filename={"clusters.csv"} data={clusteredCsvData.content}>Download Cluster Data</CSVLink>
-
+            
             {createMapElement()}
 
         </div>

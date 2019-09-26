@@ -1,5 +1,5 @@
 const initialState = {
-    isAuthenticated: false
+    isAuthenticated: localStorage.getItem('jsonwebtoken') ? true : false
 }
 
 const reducer = (state = initialState, action) => {

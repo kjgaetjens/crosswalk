@@ -1,4 +1,5 @@
 import React,{useState, useEffect} from 'react';
+import axios from 'axios'
 
 function Session(props) {
 
@@ -10,32 +11,21 @@ function Session(props) {
   
     const getSessionInfo = async () => {
         let result = 
-            await fetch(`http://localhost:3001/sessions/${sessionId}`, {
-                method: 'GET',
-                headers: {'Content-Type': 'application/json'},
-            })
-        let sessionObj = await result.json()
+            await axios.get(`http://localhost:3001/sessions/${sessionId}`)
+        let sessionObj = result.data
         
         setSessionInfo({...sessionObj})
     }
 
     const activateSession = async () => {
-        await fetch(`http://localhost:3001/sessions/start-session`, {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({"sessionId": sessionInfo.id})
-        })
+        await axios.post(`http://localhost:3001/sessions/start-session`, {sessionId: sessionInfo.id})
         
         //should wait for a succesful response before executing
         getSessionInfo()
     }
 
     const deactivateSession = async () => {
-        await fetch(`http://localhost:3001/sessions/stop-session`, {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({"sessionId": sessionInfo.id})
-        })
+        await axios.post(`http://localhost:3001/sessions/stop-session`, {"sessionId": sessionInfo.id})
 
         //should wait for a succesful response before executing
         getSessionInfo()
