@@ -8,6 +8,7 @@ import AddSession from './components/AddSession'
 import Session from './components/Session'
 import Dashboard from './components/Dashboard'
 import * as serviceWorker from './serviceWorker';
+import Register from './components/Register'
 import Login from './components/Login'
 import {BaseLayout} from './BaseLayout'
 import { setAuthenticationHeader } from './utils/authenticate'
@@ -26,6 +27,7 @@ ReactDOM.render(
     <Provider store = {store}>
         <BaseLayout>
             <Switch>
+                <Route path="/register" component={Register} />
                 <Route path="/login" component={Login} />
                 {/* <Route exact path="/sessions" component={requireAuth(Sessions)} /> */}
                 <Route path="/sessions/add-session" component={requireAuth(AddSession)} />
