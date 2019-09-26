@@ -3,12 +3,14 @@ const cors = require('cors')
 const app = express()
 global.models = require('./models')
 const PORT = 3001
+require('dotenv').config()
 const Location = require('./classes/location')
 var clustering = require('density-clustering')
 var dbscan = new clustering.DBSCAN()
 var sphereKnn = require('sphere-knn')
 
 // https://github.com/uhho/density-clustering/blob/master/README.md
+
 
 
 app.use(cors())
@@ -25,10 +27,26 @@ app.get('/sessions/:sessionid', async (req,res) => {
     res.json(sessionRecord)
 })
 
+app.get('/sessions/:sessionid/rawcsv', async (req,res) => {
+    const sessionId = parseInt(req.params.sessionid)
+
+    let desiredCoordinateRecords = await models.DesiredCoordinate.findAll(
+        {where:{sessionId: sessionId}}
+    )
+
+    let coordinates = [["longitude", "latitude"]]
+    desiredCoordinateRecords.forEach(record => {
+        coordinates.push([parseFloat(record.longitude), parseFloat(record.latitude)])
+    })
+    
+    res.json({"coordinates":coordinates})
+
+})
+
 app.get('/sessions/:sessionid/dashboard/:radius/:minPoints', async (req,res) => {
 
     const sessionId = parseInt(req.params.sessionid)
-    const radius = parseInt(req.params.radius)
+    const radius = parseFloat(req.params.radius)/100000
     const minPoints = parseInt(req.params.minPoints)
 
     let desiredCoordinateRecords = await models.DesiredCoordinate.findAll(
