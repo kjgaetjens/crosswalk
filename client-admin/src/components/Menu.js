@@ -15,7 +15,7 @@ function Menu(props) {
         {props.authenticated ? <li><NavLink to="/sessions">Sessions</NavLink></li> : null}
         {props.authenticated ? <li><NavLink to="/sessions/add-session">Add Session</NavLink></li> : null}
         {!props.authenticated ? <li><NavLink to="/login">Login</NavLink></li> : null}
-        {props.authenticated ? <li><a href="#" onClick={() => handleSignout()}>Sign Out</a></li>: null}
+        {props.authenticated ? <li><a href="/login" onClick={() => handleSignout()}>Sign Out</a></li>: null}
     </ul>
 
 }
