@@ -5,7 +5,8 @@ module.exports = (sequelize, DataTypes) => {
     status: { type: DataTypes.STRING}
   }, {});
   Session.associate = function(models) {
-    Session.hasMany(models.DesiredCoordinate, {as : 'DesiredCoordinates', foreignKey: 'sessionId'})
+    Session.hasMany(models.DesiredCoordinate, {as : 'DesiredCoordinate', foreignKey: 'sessionId'})
+    Session.belongsTo(models.User, {as : 'User', foreignKey: 'userId'})
   };
   return Session;
 };
