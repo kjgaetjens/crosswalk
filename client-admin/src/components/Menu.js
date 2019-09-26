@@ -11,7 +11,7 @@ function Menu(props) {
 
     return <ul>
         <li><NavLink to="/">Home</NavLink></li>
-        <li><NavLink to="/sessions/3/dashboard">Test Link</NavLink></li>
+        <li><NavLink to="/sessions/6/dashboard">Test Link</NavLink></li>
         {props.authenticated ? <li><NavLink to="/sessions">Sessions</NavLink></li> : null}
         {props.authenticated ? <li><NavLink to="/sessions/add-session">Add Session</NavLink></li> : null}
         {!props.authenticated ? <li><NavLink to="/register">Register</NavLink></li> : null}
