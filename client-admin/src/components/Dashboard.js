@@ -207,8 +207,8 @@ function Dashboard(props) {
                 </tbody>
             </table>
 
-            <CSVLink data={rawCsvData.content}>Download Raw Data</CSVLink>
-            <CSVLink data={clusteredCsvData.content}>Download Cluster Data</CSVLink>
+            <CSVLink filename={"raw.csv"} data={rawCsvData.content}>Download Raw Data</CSVLink>
+            <CSVLink filename={"clusters.csv"} data={clusteredCsvData.content}>Download Cluster Data</CSVLink>
 
             {createMapElement()}
 
