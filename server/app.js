@@ -53,6 +53,33 @@ app.post('/login', async (req, res) => {
     } 
 })
 
+app.get('/sessions/all', async (req,res) => {
+
+    let username = ''
+    let headers = req.headers['authorization']
+    if(headers) {
+        const token = headers.split(' ')[1]
+        var decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
+        if(decoded) {
+            username = decoded.username
+        } else {
+            res.json({error: 'You are not logged in'})
+        }
+    } else {
+        res.json({error: 'You are not logged in'})
+    }
+    let userRecord = await models.User.findOne(
+        {where:{username: username}}
+    )
+    const userId = userRecord.id
+    
+    const sessionRecords = await models.Session.findAll(
+        {where:{userId: userId}}
+    )
+
+    res.json({"sessions": sessionRecords})
+})
+
 app.get('/sessions/:sessionid', async (req,res) => {
 
     const sessionId = parseInt(req.params.sessionid)
