@@ -5,6 +5,7 @@ global.models = require('./models')
 require('dotenv').config()
 const PORT = process.env.PORT
 var jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt')
 const authenticate = require('./authentication')
 const Location = require('./classes/location')
 var clustering = require('density-clustering')
@@ -17,6 +18,20 @@ app.use(express.json())
 app.all('/sessions/*', authenticate)
 
 
+app.post('/register', async (req,res) => {
+
+    const username = req.body.username
+    const password = req.body.password
+    const hash = await bcrypt.hash(password, 10)
+
+    let userRecord = await models.User.create({
+        username: username,
+        password: hash
+    })
+
+    res.status(200).send() 
+})
+
 app.post('/login', async (req, res) => {
     const username = req.body.username
     const password = req.body.password
@@ -26,7 +41,8 @@ app.post('/login', async (req, res) => {
     )
 
     if (userRecord) {
-        if (userRecord.username == username && userRecord.password === password) {
+        let validatedPassword = await bcrypt.compare(password, userRecord.password)
+        if (validatedPassword) {
             var token = jwt.sign({username:username}, process.env.JWT_SECRET_KEY);
             res.json({token:token})
         } else {
@@ -36,20 +52,6 @@ app.post('/login', async (req, res) => {
         res.status(401).json({error: 'Invalid credentials'})
     } 
 })
-
-app.post('/register', async (req,res) => {
-
-    const username = req.body.username
-    const password = req.body.password
-
-    let userRecord = await models.User.create({
-        username: username,
-        password: password
-    })
-
-    res.status(200).send() 
-})
-
 
 app.get('/sessions/:sessionid', async (req,res) => {
 
@@ -171,13 +173,31 @@ app.get('/sessions/:sessionid/dashboard/:radius/:minPoints', async (req,res) => 
 })
 
 app.post('/sessions/add-session', async (req,res) => {
-
     const param = req.body.param
     const status = req.body.status
+    let username = ''
+    let headers = req.headers['authorization']
+    if(headers) {
+        const token = headers.split(' ')[1]
+        var decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
+        if(decoded) {
+            username = decoded.username
+        } else {
+            res.json({error: 'You are not logged in'})
+        }
+    } else {
+        res.json({error: 'You are not logged in'})
+    }
+
+    const userRecord = await models.User.findOne(
+        {where:{username: username}}
+    )
+    const userId = userRecord.id
 
     let sessionRecord = await models.Session.create({
         param: param,
-        status: status
+        status: status,
+        userId: userId
     })
 
     res.status(200).send() 
