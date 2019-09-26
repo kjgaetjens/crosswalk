@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken')
 require('dotenv').config()
 
-const authenticate = (req, res, next) => {
+const authenticate = async (req, res, next) => {
     let headers = req.headers['authorization']
     
     if(headers) {
@@ -9,8 +9,10 @@ const authenticate = (req, res, next) => {
         var decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
         if(decoded) {
             const username = decoded.username
-            const persistedUser = users.find(user => user.username == username)
-            if(persistedUser) {
+            let userRecord = await models.User.findOne(
+                {where:{username: username}}
+            )
+            if(userRecord) {
                 next()
             } else {
                 res.json({error: 'Invalid credentials'})

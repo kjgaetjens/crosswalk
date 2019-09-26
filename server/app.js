@@ -11,25 +11,43 @@ var clustering = require('density-clustering')
 var dbscan = new clustering.DBSCAN()
 var sphereKnn = require('sphere-knn')
 
-global.users = [{username: 'test1', password: 'test123'}]
-
 
 app.use(cors())
 app.use(express.json())
 app.all('/sessions/*', authenticate)
 
-app.post('/login', (req, res) => {
+
+app.post('/login', async (req, res) => {
     const username = req.body.username
     const password = req.body.password
 
-    let persistedUser = users.find(user => user.username == username && user.password == password)
+    let userRecord = await models.User.findOne(
+        {where:{username: username}}
+    )
 
-    if (persistedUser) {
-        var token = jwt.sign({username:username}, process.env.JWT_SECRET_KEY);
-        res.json({token:token})
+    if (userRecord) {
+        if (userRecord.username == username && userRecord.password === password) {
+            var token = jwt.sign({username:username}, process.env.JWT_SECRET_KEY);
+            res.json({token:token})
+        } else {
+            res.status(401).json({error: 'Invalid credentials'})
+        }
     } else {
         res.status(401).json({error: 'Invalid credentials'})
-    }
+    } 
+})
+
+app.post('/register', async (req,res) => {
+
+    const username = req.body.username
+    const password = req.body.password
+
+    let userRecord = await models.User.create({
+        username: username,
+        password: password
+    })
+
+    res.status(200).send() 
 })
 
 
