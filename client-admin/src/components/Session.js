@@ -20,7 +20,7 @@ function Session(props) {
     }
 
     const activateSession = async () => {
-        await fetch(`http://localhost:3001/start-session`, {
+        await fetch(`http://localhost:3001/sessions/start-session`, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({"sessionId": sessionInfo.id})
@@ -31,7 +31,7 @@ function Session(props) {
     }
 
     const deactivateSession = async () => {
-        await fetch(`http://localhost:3001/stop-session`, {
+        await fetch(`http://localhost:3001/sessions/stop-session`, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({"sessionId": sessionInfo.id})

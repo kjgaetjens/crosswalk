@@ -1,4 +1,5 @@
 import React,{useState} from 'react';
+import axios from 'axios'
 
 function AddSession() {
 
@@ -13,11 +14,13 @@ function AddSession() {
     const status = 'INACTIVE'
     const session = {"param": param, "status": status}
 
-    fetch(`http://localhost:3001/add-session`, {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(session)
-    })
+    axios.post('http://localhost:3001/sessions/add-session', session)
+
+    // fetch(`http://localhost:3001/add-session`, {
+    //   method: 'POST',
+    //   headers: {'Content-Type': 'application/json'},
+    //   body: JSON.stringify(session)
+    // })
   }
 
 

@@ -1,6 +1,7 @@
 import React,{useState, useEffect} from 'react';
 import { Map, GoogleApiWrapper, Marker } from 'google-maps-react';
 import {CSVLink, CSVDownload} from 'react-csv'
+import axios from 'axios'
 import * as config from '../env.js'
 
 //move to style sheet
@@ -38,12 +39,8 @@ function Dashboard(props) {
         const radius = dashboardParams.radius
         const minPoints = dashboardParams.minPoints
 
-        let result = 
-            await fetch(`http://localhost:3001/sessions/${sessionId}/dashboard/${radius}/${minPoints}`, {
-                method: 'GET',
-                headers: {'Content-Type': 'application/json'}
-            })
-        let dashboardObj = await result.json()
+        let result = await axios.get(`http://localhost:3001/sessions/${sessionId}/dashboard/${radius}/${minPoints}`)
+        let dashboardObj = result.data
 
         setDashboardInfo({...dashboardObj})
 
@@ -51,12 +48,8 @@ function Dashboard(props) {
     }
 
     const getRawCsvData = async () => {
-        let result = 
-            await fetch(`http://localhost:3001/sessions/${sessionId}/rawcsv`, {
-                method: 'GET',
-                headers: {'Content-Type': 'application/json'}
-            })
-        let rawCsvDataObj = await result.json()
+        let result = await axios.get(`http://localhost:3001/sessions/${sessionId}/rawcsv`)
+        let rawCsvDataObj = result.data
 
         setRawCsvData({content: rawCsvDataObj.coordinates})
     }

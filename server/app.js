@@ -2,19 +2,36 @@ const express = require('express')
 const cors = require('cors')
 const app = express()
 global.models = require('./models')
-const PORT = 3001
 require('dotenv').config()
+const PORT = process.env.PORT
+var jwt = require('jsonwebtoken');
+const authenticate = require('./authentication')
 const Location = require('./classes/location')
 var clustering = require('density-clustering')
 var dbscan = new clustering.DBSCAN()
 var sphereKnn = require('sphere-knn')
 
-// https://github.com/uhho/density-clustering/blob/master/README.md
-
+global.users = [{username: 'test1', password: 'test123'}]
 
 
 app.use(cors())
 app.use(express.json())
+app.all('/sessions/*', authenticate)
+
+app.post('/login', (req, res) => {
+    const username = req.body.username
+    const password = req.body.password
+
+    let persistedUser = users.find(user => user.username == username && user.password == password)
+
+    if (persistedUser) {
+        var token = jwt.sign({username:username}, process.env.JWT_SECRET_KEY);
+        res.json({token:token})
+    } else {
+        res.status(401).json({error: 'Invalid credentials'})
+    }
+})
+
 
 app.get('/sessions/:sessionid', async (req,res) => {
 
@@ -135,7 +152,7 @@ app.get('/sessions/:sessionid/dashboard/:radius/:minPoints', async (req,res) => 
     res.json(clusterNoiseObj)
 })
 
-app.post('/add-session', async (req,res) => {
+app.post('/sessions/add-session', async (req,res) => {
 
     const param = req.body.param
     const status = req.body.status
@@ -148,7 +165,7 @@ app.post('/add-session', async (req,res) => {
     res.status(200).send() 
 })
 
-app.post('/start-session', async (req,res) => {
+app.post('/sessions/start-session', async (req,res) => {
 
     const sessionId = req.body.sessionId
 
@@ -160,7 +177,7 @@ app.post('/start-session', async (req,res) => {
     res.status(200).send() 
 })
 
-app.post('/stop-session', async (req,res) => {
+app.post('/sessions/stop-session', async (req,res) => {
 
     const sessionId = req.body.sessionId
 
