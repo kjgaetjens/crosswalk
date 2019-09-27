@@ -1,0 +1,41 @@
+h2 {
+    margin-top: 20px;
+}
+
+.addSession button {
+    margin-left: 10px;
+}
+
+.sessionDiv button {
+    margin-right: 10px;
+}
+
+.mapDiv {
+    height: 61vh;
+}
+
+.dashboardTable {
+    position: absolute;
+}
+
+.clusterParams label {
+    padding-left: 10px;
+}
+
+.navbar-brand a {
+    text-decoration: none;
+    color: black;
+}
+
+.navbar a {
+    padding-right: 10px;
+}
+
+.login {
+    margin: 30px;
+    margin-top: 20px;
+}
+
+.login input {
+    width: 500px;
+}

@@ -23,14 +23,23 @@ function Login(props) {
             localStorage.setItem('jsonwebtoken',token)
             setAuthenticationHeader(token)
             props.onAuthenticate(token)
+            props.history.push(`/sessions`)
         })
+
     }
 
     return (
-        <div>
-            <input type="text" name="username" onChange={(e) => handleInputChange(e)} />
-            <input type="password" name="password" onChange={(e) => handleInputChange(e)} />
-            <button onClick={() => handleLogin()}>Login</button>
+        <div className="login">
+            <h1>Log in to Walkable</h1>
+            <div className="form-group">
+                <label htmlFor="username">Email address</label>
+                <input id="username" type="email" className="form-control" placeholder="eg. myemail@domain.com" name="username" onChange={(e) => handleInputChange(e)} />
+            </div>
+            <div className="form-group">
+                <label htmlFor="password">Password</label>
+                <input id="password" type="password" className="form-control" placeholder="eg. abCD12!!" name="password" onChange={(e) => handleInputChange(e)} />
+            </div>
+            <button className="btn btn-primary" onClick={() => handleLogin()}>Login</button>
         </div>
     )
 
