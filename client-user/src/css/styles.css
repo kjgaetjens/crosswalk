@@ -1,0 +1,11 @@
+.addLocation {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+}
+
+.addLocation button{
+    width: 300px;
+    height: 300px;
+}
