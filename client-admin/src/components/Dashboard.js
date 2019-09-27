@@ -17,7 +17,7 @@ function Dashboard(props) {
         mapElement = element
     }
     const zoomToClusters = () => {
-        if (mapElement) adjustMap(mapElement.props, mapElement.map)
+        if (mapElement) adjustMapTwo(mapElement.props, mapElement.map)
     }
 
 
@@ -81,23 +81,39 @@ function Dashboard(props) {
         setClusteredCsvData({content: contentArray})
     }
 
+    //this adjust map was implemented to adjust boundaries to visible markers
+    // const adjustMap = (mapProps, map) => {
+    //     const {google, children} = mapProps;
+    //     if (children.length > 0) {
+    //         const bounds = new google.maps.LatLngBounds();
+    //         children.forEach(child => {
+    //             if (child) {
+    //                 child.forEach(grandchild => {
+    //                     const {lat, lng} = grandchild.props.position;
+    //                     bounds.extend(new google.maps.LatLng(lat, lng));
+    //                 })
+    //             }
+    //         });
+        
+    //         map.fitBounds(bounds);
+    //     }
+    // }
 
-    const adjustMap = (mapProps, map) => {
+    const adjustMapTwo = (mapProps, map) => {
         const {google, children} = mapProps;
-        if (children.length > 0) {
+        if (rawCsvData.content.length > 1) {
             const bounds = new google.maps.LatLngBounds();
-            children.forEach(child => {
-                if (child) {
-                    child.forEach(grandchild => {
-                        const {lat, lng} = grandchild.props.position;
-                        bounds.extend(new google.maps.LatLng(lat, lng));
-                    })
-                }
-            });
+
+            for (let i = 1; i < rawCsvData.content.length; i++) {
+                const lat = rawCsvData.content[i][1]
+                const lng = rawCsvData.content[i][0]
+                bounds.extend(new google.maps.LatLng(lat, lng));
+            }
         
             map.fitBounds(bounds);
         }
     }
+
 
     const handleParamChange = (e) => {
         setDashboardParams({
@@ -165,7 +181,7 @@ function Dashboard(props) {
                             // zoom={8}
                             style={mapStyles}
                             initialCenter={{ lat: 47.444, lng: -122.176}}
-                            onReady = {adjustMap}
+                            onReady = {adjustMapTwo}
                             ref={setMapElementRef}
                         >
                             {createClusterMarkers()}
