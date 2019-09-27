@@ -26,24 +26,57 @@ function Sessions(props) {
     const getSessions = async () => {
         let result = 
             await axios.get('http://localhost:3001/sessions/all')
-        let sessionArray = result.data
-        setSessions({sessions: sessionArray.sessions})
+        let sessionObj = result.data
+        let sessionArray = sessionObj.sessions
+        sessionArray.sort((a, b) => {
+            if (a.status < b.status) {
+                return -1
+            } else if (a.status > b.status) {
+                return 1
+            } else {
+                return 0
+            }
+        })
+
+        setSessions({sessions: sessionArray})
     }
 
     return (
         <div>
-            <div>
-                <label>Desired Session Name: </label>
-                <input name="session" type="text" onChange={(e) => handleSessionInputChange(e)}/>
-                <button onClick={() => createSession()}>Submit</button>
+            <div className="addSession">
+                <h2>Add Session</h2>
+                <form className="form-inline">
+                    <label htmlFor="session">Session Name for URL:&nbsp;</label>
+                    <input id="session" className="form-control" name="session" type="text" placeholder="eg. walkable-honolulu" onChange={(e) => handleSessionInputChange(e)}/>
+                    <button className="btn btn-primary" onClick={() => createSession()}>Add</button>
+                </form>
             </div>
-            {userSessions.sessions.map(session => {
-                return (
-                    <div>
-                        <a href={`/sessions/${session.id}`}>{session.param}</a><span> - {session.status}</span>
-                    </div>
-                )
-            })}
+            <h2>Your Sessions</h2>
+            <table className="table">
+                <tbody>
+                {userSessions.sessions.map(session => {
+                    if (session.status === 'ACTIVE') {
+                        return (
+                            <tr className="table-primary">
+                                <td>{session.param}</td>
+                                <td>{session.status}</td>
+                                <td><a href={`/sessions/${session.id}`}>Info</a></td>
+                                <td><a href={`/sessions/${session.id}/dashboard`}>Dashboard</a></td>
+                            </tr>
+                        )
+                    } else {
+                        return (
+                            <tr className="">
+                                <td>{session.param}</td>
+                                <td>{session.status}</td>
+                                <td><a href={`/sessions/${session.id}`}>Info</a></td>
+                                <td><a href={`/sessions/${session.id}/dashboard`}>Dashboard</a></td>
+                            </tr>
+                        )
+                    }
+                })}
+                </tbody>
+            </table>
         </div>
         
     );

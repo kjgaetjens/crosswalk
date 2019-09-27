@@ -6,8 +6,8 @@ import * as config from '../env.js'
 
 //move to style sheet
 const mapStyles = {
-    width: '50%',
-    height: '50%',
+    width: '100%',
+    height: '60vh',
 }
 
 function Dashboard(props) {
@@ -157,18 +157,21 @@ function Dashboard(props) {
             ) {
                 return (
                     <div>
-                    <button onClick={() => zoomToClusters()}>Zoom to Clusters</button>                 
-                    <Map
-                        google={props.google}
-                        // zoom={8}
-                        style={mapStyles}
-                        initialCenter={{ lat: 47.444, lng: -122.176}}
-                        onReady = {adjustMap}
-                        ref={setMapElementRef}
-                    >
-                        {createClusterMarkers()}
-                        {createNoiseMarkers()}
-                    </Map>
+                        <h2>Cluster Map</h2>
+                        <button className="" onClick={() => zoomToClusters()}>Zoom to Clusters</button> 
+                        <div className="mapDiv">           
+                        <Map className="mapElement"
+                            google={props.google}
+                            // zoom={8}
+                            style={mapStyles}
+                            initialCenter={{ lat: 47.444, lng: -122.176}}
+                            onReady = {adjustMap}
+                            ref={setMapElementRef}
+                        >
+                            {createClusterMarkers()}
+                            {createNoiseMarkers()}
+                        </Map>
+                        </div>
                     </div>
                 )
             }
@@ -176,19 +179,34 @@ function Dashboard(props) {
 
 
     return (
-        <div>
-            <label htmlFor="radiusParam">Cluster Radius(meters)</label>
-            <input id="radiusParam" name="radius" min="0" step="10" placeholder={dashboardParams.radius} value={dashboardParams.radius} type="number" onChange={(e) => handleParamChange(e)}/>
-            <label htmlFor="minPointsParam">Cluster Minimum Points</label>
-            <input id="minPointsParam" name="minPoints" type="number" min="1" step="1" placeholder={dashboardParams.minPoints}value={dashboardParams.minPoints} onChange={(e) => handleParamChange(e)}/>
-            <label htmlFor="displayNoise">Show Noise</label>
-            <input id="displayNoiseParam" name="displayNoise" type="checkbox" onChange={(e) => handleNoiseParamChange(e)}/>
-            <table>
+        <div className="dashboard">
+            <div className="clusterParams">
+            <h2>Cluster Parameters</h2>
+            <form className="form-inline">
+                <label htmlFor="radiusParam">Cluster Radius(approx. meters):&nbsp;</label>
+                <input id="radiusParam" className="form-control" name="radius" min="0" step="10" placeholder={dashboardParams.radius} value={dashboardParams.radius} type="number" onChange={(e) => handleParamChange(e)}/>
+                <label htmlFor="minPointsParam">Cluster Minimum Points:&nbsp;</label>
+                <input id="minPointsParam" className="form-control" name="minPoints" type="number" min="1" step="1" placeholder={dashboardParams.minPoints}value={dashboardParams.minPoints} onChange={(e) => handleParamChange(e)}/>
+                <div className="form-check">
+                    <label htmlFor="displayNoise" className="form-check-label">Show Noise:&nbsp;</label>
+                    <input id="displayNoiseParam" className="form-check-input" name="displayNoise" type="checkbox" onChange={(e) => handleNoiseParamChange(e)}/>
+                </div>
+
+            </form>
+            </div>
+
+            {createMapElement()}
+
+            <div className="dashboardTable">
+            <h2>Cluster Data</h2>
+            <CSVLink filename={"raw.csv"} data={rawCsvData.content}>Download Raw Data</CSVLink>
+            <CSVLink filename={"clusters.csv"} data={clusteredCsvData.content}>Download Cluster Data</CSVLink>
+            <table className="table table-bordered table-hover">
                 <thead>
-                    <tr>
-                        <th>Count</th>
-                        <th>Coordinates (longitude, latitude)</th>
-                        <th>Coordinate Nearest to Center (longitude, latitude)</th>
+                    <tr className="thead-light">
+                        <th scope="col">Count</th>
+                        <th scope="col">Coordinates (lng, lat)</th>
+                        <th scope="col">Nearest to Center (lng, lat)</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -206,11 +224,7 @@ function Dashboard(props) {
                 {createNoiseRows()}
                 </tbody>
             </table>
-
-            <CSVLink filename={"raw.csv"} data={rawCsvData.content}>Download Raw Data</CSVLink>
-            <CSVLink filename={"clusters.csv"} data={clusteredCsvData.content}>Download Cluster Data</CSVLink>
-            
-            {createMapElement()}
+            </div>
 
         </div>
     );

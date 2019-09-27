@@ -33,12 +33,13 @@ function Session(props) {
 
 
     return (
-        <div>
+        <div className="sessionDiv">
+            <h2>Session Info</h2>
             <h4>ID: {sessionInfo.id}</h4>
             <h4>URL: http://localhost:3000/{sessionInfo.param}</h4>
             <h4>Status: {sessionInfo.status}</h4>
-            <button onClick={() => activateSession()}>Activate</button>
-            <button onClick={() => deactivateSession()}>Deactivate</button>
+            {sessionInfo.status === 'INACTIVE' ? <button className="btn btn-primary" onClick={() => activateSession()}>Activate</button> : null}
+            {sessionInfo.status === 'ACTIVE' ? <button className="btn btn-primary" onClick={() => deactivateSession()}>Deactivate</button> : null}
         </div>
     );
 }

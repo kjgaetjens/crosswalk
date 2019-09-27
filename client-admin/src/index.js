@@ -15,6 +15,8 @@ import { Provider } from 'react-redux'
 import { createStore } from 'redux'
 import reducer from './store/reducer'
 import requireAuth from './components/requireAuth'
+import './css/bootstrap431/css/bootstrap.min.css';
+import './css/styles.css'
 
 const store = createStore(reducer, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__())
 

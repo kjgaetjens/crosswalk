@@ -9,12 +9,18 @@ function Menu(props) {
         props.onSignout()
     }
 
-    return <ul>
-        {props.authenticated ? <li><NavLink to="/sessions">Sessions</NavLink></li> : null}
-        {!props.authenticated ? <li><NavLink to="/register">Register</NavLink></li> : null}
-        {!props.authenticated ? <li><NavLink to="/">Login</NavLink></li> : null}
-        {props.authenticated ? <li><a href="/" onClick={() => handleSignout()}>Sign Out</a></li>: null}
-    </ul>
+    return (
+        <nav className="navbar navbar-light bg-light">
+        {/* <nav className="navbar navbar-dark bg-primary"> */}
+            <span className="navbar-brand mb-0 h1"><NavLink to="/sessions">Walkable</NavLink></span>
+            <span>
+            {props.authenticated ? <NavLink to="/sessions">Sessions</NavLink> : null}
+            {!props.authenticated ? <NavLink to="/register">Register</NavLink> : null}
+            {!props.authenticated ? <NavLink to="/">Login</NavLink> : null}
+            {props.authenticated ? <a href="/" onClick={() => handleSignout()}>Sign Out</a>: null}
+            </span>
+        </nav>
+    )
 
 }
 

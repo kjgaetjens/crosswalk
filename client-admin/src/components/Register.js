@@ -23,13 +23,18 @@ function Register() {
 
 
   return (
-    <div>
-      <label>Username: </label>
-      <input name="username" type="text" onChange={(e) => handleUserInputChange(e)}/>
-      <label>Password: </label>
-      <input name="password" type="password" onChange={(e) => handleUserInputChange(e)}/>
-      <button onClick={() => createUser()}>Submit</button>
-    </div>
+      <div className="login">
+        <h1>Register for Walkable</h1>
+        <div className="form-group">
+          <label htmlFor="username">Email address</label>
+          <input id="username" name="username" type="email" className="form-control" placeholder="eg. myemail@domain.com" onChange={(e) => handleUserInputChange(e)}/>
+        </div>
+        <div className="form-group">
+          <label htmlFor="password">Password</label>
+          <input id="password" name="password" type="password" className="form-control" placeholder="eg. abCD12!!" onChange={(e) => handleUserInputChange(e)}/>
+        </div>
+        <button className="btn btn-primary" onClick={() => createUser()}>Submit</button>
+      </div>
   );
 }
 
