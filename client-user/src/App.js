@@ -39,7 +39,10 @@ function App(props) {
   }
   
   return (
-    <button onClick={() => sendLocation()}>I want to cross</button>
+    <div className="addLocation">
+      <h2>Walkable</h2>
+      <button className="btn btn-primary btn-block" onClick={() => sendLocation()}><h1>I want to cross here</h1></button>
+    </div>
   );
 }
 
