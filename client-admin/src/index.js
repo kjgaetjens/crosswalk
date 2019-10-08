@@ -5,7 +5,7 @@ import './index.css';
 // import App from './App';
 import Sessions from './components/Sessions'
 import Session from './components/Session'
-import Dashboard from './components/Dashboard'
+import Dashboard from './components/Dashboard2View'
 import * as serviceWorker from './serviceWorker';
 import Register from './components/Register'
 import Login from './components/Login'

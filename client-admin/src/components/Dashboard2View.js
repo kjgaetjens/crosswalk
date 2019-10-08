@@ -1,57 +1,76 @@
-import React,{useState, useEffect} from 'react';
-import { Map, GoogleApiWrapper, Marker } from 'google-maps-react';
-import {CSVLink, CSVDownload} from 'react-csv'
+import React, {useState, useEffect} from 'react'
+import Map from './Dashboard2'
+import GoogleApiComponent from '../utils/GoogleApiComponent'
+import GoogleApi from '../utils/GoogleApiComponent'
+import {CSVLink} from 'react-csv'
+import * as env from '../env'
 import axios from 'axios'
-import * as config from '../env.js'
 
-//move to style sheet
-const mapStyles = {
-    width: '100%',
-    height: '60vh',
-}
-
-function Dashboard(props) {
-
-    var mapElement = null
-    const setMapElementRef = element => {
-        mapElement = element
-    }
-    const zoomToClusters = () => {
-        if (mapElement) adjustMapTwo(mapElement.props, mapElement.map)
-    }
+const Dashboard = (props) => {
 
 
-    const [dashboardParams, setDashboardParams] = useState({radius: 100, minPoints: 2, displayNoise: false})
-    const [dashboardInfo, setDashboardInfo] = useState({clusters: [], noise: {}})
+    const [error, setError] = useState("")
+    const [directions, setDirections] = useState({
+        active: false,
+        route: {}
+    })
+
+    const [dashboardParams, setDashboardParams] = useState({radius: 100, minPoints: 2, displayNoise: false, displayIQR: false})
+    const [dashboardInfo, setDashboardInfo] = useState({range: 0, min: 0, clusters: [], noise: {}})
     const [rawCsvData, setRawCsvData] = useState({content: []})
     const [clusteredCsvData, setClusteredCsvData] = useState({content: []})
     
     const sessionId = props.match.params.sessionid
 
 
-    useEffect(() => {
-        getDashboardInfo()
-        getRawCsvData()
-    },[dashboardParams])
-  
 
-    const getDashboardInfo = async () => {
+
+
+
+
+
+    const handleParamChange = (e) => {
+        setDashboardParams({
+            ...dashboardParams,
+            [e.target.name]: e.target.value
+        })
+    }
+
+    const handleNoiseParamChange = (e) => {
+        setDashboardParams({
+            ...dashboardParams,
+            [e.target.name]: e.target.checked
+        })
+    }
+
+    const handleIQRParamChange = (e) => {
+        setDashboardParams({
+            ...dashboardParams,
+            [e.target.name]: e.target.checked
+        })
+    }
+
+
+
+
+
+      const getDashboardInfo = async () => {
         const radius = dashboardParams.radius
         const minPoints = dashboardParams.minPoints
 
         let result = await axios.get(`http://localhost:3001/sessions/${sessionId}/dashboard/${radius}/${minPoints}`)
         let dashboardObj = result.data
+        let clusterRange = 0
+        let clusterMin = 0
+        if (dashboardObj.clusters.length > 0) {
+            let clusterCountArray = dashboardObj.clusters.map(cluster => cluster.count)
+            let clusterMax = Math.max(...clusterCountArray)
+            clusterMin = Math.min(...clusterCountArray)
+            clusterRange = clusterMax-clusterMin
+        }
 
-        setDashboardInfo({...dashboardObj})
-
+        setDashboardInfo({range: clusterRange, min: clusterMin, ...dashboardObj})
         getClusteredCsvData(dashboardObj)
-    }
-
-    const getRawCsvData = async () => {
-        let result = await axios.get(`http://localhost:3001/sessions/${sessionId}/rawcsv`)
-        let rawCsvDataObj = result.data
-
-        setRawCsvData({content: rawCsvDataObj.coordinates})
     }
 
     const getClusteredCsvData = (clusteredDataObj) => {
@@ -81,52 +100,11 @@ function Dashboard(props) {
         setClusteredCsvData({content: contentArray})
     }
 
-    //this adjust map was implemented to adjust boundaries to visible markers
-    // const adjustMap = (mapProps, map) => {
-    //     const {google, children} = mapProps;
-    //     if (children.length > 0) {
-    //         const bounds = new google.maps.LatLngBounds();
-    //         children.forEach(child => {
-    //             if (child) {
-    //                 child.forEach(grandchild => {
-    //                     const {lat, lng} = grandchild.props.position;
-    //                     bounds.extend(new google.maps.LatLng(lat, lng));
-    //                 })
-    //             }
-    //         });
-        
-    //         map.fitBounds(bounds);
-    //     }
-    // }
+    const getRawCsvData = async () => {
+        let result = await axios.get(`http://localhost:3001/sessions/${sessionId}/rawcsv`)
+        let rawCsvDataObj = result.data
 
-    const adjustMapTwo = (mapProps, map) => {
-        const {google, children} = mapProps;
-        if (rawCsvData.content.length > 1) {
-            const bounds = new google.maps.LatLngBounds();
-
-            for (let i = 1; i < rawCsvData.content.length; i++) {
-                const lat = rawCsvData.content[i][1]
-                const lng = rawCsvData.content[i][0]
-                bounds.extend(new google.maps.LatLng(lat, lng));
-            }
-        
-            map.fitBounds(bounds);
-        }
-    }
-
-
-    const handleParamChange = (e) => {
-        setDashboardParams({
-            ...dashboardParams,
-            [e.target.name]: e.target.value
-        })
-    }
-
-    const handleNoiseParamChange = (e) => {
-        setDashboardParams({
-            ...dashboardParams,
-            [e.target.name]: e.target.checked
-        })
+        setRawCsvData({content: rawCsvDataObj.coordinates})
     }
 
     const createNoiseRows = () => {
@@ -145,53 +123,47 @@ function Dashboard(props) {
         }
     }
 
-    const createClusterMarkers = () => {
-        if (dashboardInfo.clusters.length > 0) {
-            return (
-                dashboardInfo.clusters.map(cluster => {
-                    return <Marker position={{ lat: cluster.centerPoint.latitude, lng: cluster.centerPoint.longitude}} />
-                })
-            )
-        }
-    }
 
-    const createNoiseMarkers = () => {
-        if (dashboardParams.displayNoise == true && dashboardInfo.noise.coordinates) {
-            return (
-                dashboardInfo.noise.coordinates.map(coordinate => {
-                    return <Marker position={{ lat: coordinate.latitude, lng: coordinate.longitude}} />
-                })
-            )
-        }
-    }
 
-    const createMapElement = () => {
+
+
+    const renderMap = () => {
         if (
             (dashboardParams.displayNoise == true && (dashboardInfo.clusters.length > 0 || dashboardInfo.noise.coordinates))
             || 
             (dashboardParams.displayNoise == false && dashboardInfo.clusters.length > 0)
             ) {
-                return (
-                    <div>
-                        <h2>Cluster Map</h2>
-                        <button className="" onClick={() => zoomToClusters()}>Zoom to Clusters</button> 
-                        <div className="mapDiv">           
-                        <Map className="mapElement"
+            return (
+                <div>
+                    <h2>Cluster Map</h2>
+                    <div className="mapDiv">
+                        <Map
+                            center={{ lat: 47.444, lng: -122.176}}
                             google={props.google}
-                            // zoom={8}
-                            style={mapStyles}
-                            initialCenter={{ lat: 47.444, lng: -122.176}}
-                            onReady = {adjustMapTwo}
-                            ref={setMapElementRef}
-                        >
-                            {createClusterMarkers()}
-                            {createNoiseMarkers()}
-                        </Map>
-                        </div>
-                    </div>
+                            googleMapURL={toString(GoogleApi({}))}
+                            dashboardInfo={dashboardInfo}
+                            displayNoise={dashboardParams.displayNoise}
+                            displayIQR={dashboardParams.displayIQR}
+                            rawCsvData={rawCsvData}
+                            loadingElement={<div className='loadingElement'style={{ height: `100%` }}>Map is Loading....</div>}
+                            // initialCenter={{ lat: 47.444, lng: -122.176}}
+                            containerElement={<div className='containerElement' />}
+                            mapElement={<div className='mapElement' />}
+                        />
+                    </div> 
+                </div>
                 )
-            }
+        } else {
+            return <div className="mapDiv">Loading.....</div>
+        }
     }
+
+
+
+    useEffect(() => {
+        getDashboardInfo()
+        getRawCsvData()
+    }, [dashboardParams])
 
 
     return (
@@ -207,16 +179,19 @@ function Dashboard(props) {
                     <label htmlFor="displayNoise" className="form-check-label">Show Noise:&nbsp;</label>
                     <input id="displayNoiseParam" className="form-check-input" name="displayNoise" type="checkbox" onChange={(e) => handleNoiseParamChange(e)}/>
                 </div>
-
+                <div className="form-check">
+                    <label htmlFor="markersIQR" className="form-check-label">IQR Markers:&nbsp;</label>
+                    <input id="markersIQR" className="form-check-input" name="displayIQR" type="checkbox" onChange={(e) => handleIQRParamChange(e)}/>
+                </div>
             </form>
             </div>
 
-            {createMapElement()}
+            {renderMap()}
 
             <div className="dashboardTable">
             <h2>Cluster Data</h2>
-            <CSVLink filename={"raw.csv"} data={rawCsvData.content}>Download Raw Data</CSVLink>
-            <CSVLink filename={"clusters.csv"} data={clusteredCsvData.content}>Download Cluster Data</CSVLink>
+            <CSVLink className="csv-link" filename={"raw.csv"} data={rawCsvData.content}>Download Raw Data</CSVLink>
+            <CSVLink className="csv-link" filename={"clusters.csv"} data={clusteredCsvData.content}>Download Cluster Data</CSVLink>
             <table className="table table-bordered table-hover">
                 <thead>
                     <tr className="thead-light">
@@ -241,9 +216,11 @@ function Dashboard(props) {
                 </tbody>
             </table>
             </div>
-
         </div>
-    );
+    )
 }
 
-export default GoogleApiWrapper({apiKey: config.REACT_APP_GOOGLE_MAPS_API_KEY})(Dashboard);
+export default GoogleApiComponent({
+    apiKey: env.REACT_APP_GOOGLE_MAPS_API_KEY,
+    libraries: ['places', 'geometry']
+})(Dashboard)
