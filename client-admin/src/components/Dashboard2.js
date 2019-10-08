@@ -101,10 +101,10 @@ const Map = withScriptjs(withGoogleMap((props) => {
                 ref={setMapElementRef}
                 options={{gestureHandling:'cooperative'}}
             >
-                {props.displayIQR ? createIQRMarkers() : createCircles()}
+                {props.circleDisplay == 'iqr' ? createIQRMarkers() : createCircles()}
                 
-                {props.displayNoise && !props.displayIQR ? createCirclesNoise() : null}
-                {props.displayNoise && props.displayIQR ? createIQRMarkersNoise() : null}
+                {props.displayNoise && props.circleDisplay == 'normalized' ? createCirclesNoise() : null}
+                {props.displayNoise && props.circleDisplay == 'iqr' ? createIQRMarkersNoise() : null}
             </GoogleMap>
             <button className="zoom-button" onClick={() => adjustMapTwo()}>Zoom to Clusters</button> 
         </React.Fragment>

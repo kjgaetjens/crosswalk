@@ -5,6 +5,8 @@ import GoogleApi from '../utils/GoogleApiComponent'
 import {CSVLink} from 'react-csv'
 import * as env from '../env'
 import axios from 'axios'
+import legendDiscrete from '../images/legendDiscrete.jpg'
+import legendContinuous from '../images/legendContinuous.jpg'
 
 const Dashboard = (props) => {
 
@@ -15,7 +17,7 @@ const Dashboard = (props) => {
         route: {}
     })
 
-    const [dashboardParams, setDashboardParams] = useState({radius: 100, minPoints: 2, displayNoise: false, displayIQR: false})
+    const [dashboardParams, setDashboardParams] = useState({radius: 100, minPoints: 2, displayNoise: false, circleDisplay: 'normalized'})
     const [dashboardInfo, setDashboardInfo] = useState({range: 0, min: 0, clusters: [], noise: {}})
     const [rawCsvData, setRawCsvData] = useState({content: []})
     const [clusteredCsvData, setClusteredCsvData] = useState({content: []})
@@ -43,18 +45,14 @@ const Dashboard = (props) => {
         })
     }
 
-    const handleIQRParamChange = (e) => {
+    const handleCircleDisplayParamChange = (e) => {
         setDashboardParams({
             ...dashboardParams,
-            [e.target.name]: e.target.checked
+            [e.target.name]: e.target.value
         })
     }
 
-
-
-
-
-      const getDashboardInfo = async () => {
+    const getDashboardInfo = async () => {
         const radius = dashboardParams.radius
         const minPoints = dashboardParams.minPoints
 
@@ -143,7 +141,7 @@ const Dashboard = (props) => {
                             googleMapURL={toString(GoogleApi({}))}
                             dashboardInfo={dashboardInfo}
                             displayNoise={dashboardParams.displayNoise}
-                            displayIQR={dashboardParams.displayIQR}
+                            circleDisplay={dashboardParams.circleDisplay}
                             rawCsvData={rawCsvData}
                             loadingElement={<div className='loadingElement'style={{ height: `100%` }}>Map is Loading....</div>}
                             // initialCenter={{ lat: 47.444, lng: -122.176}}
@@ -179,9 +177,14 @@ const Dashboard = (props) => {
                     <label htmlFor="displayNoise" className="form-check-label">Show Noise:&nbsp;</label>
                     <input id="displayNoiseParam" className="form-check-input" name="displayNoise" type="checkbox" onChange={(e) => handleNoiseParamChange(e)}/>
                 </div>
-                <div className="form-check">
-                    <label htmlFor="markersIQR" className="form-check-label">IQR Markers:&nbsp;</label>
-                    <input id="markersIQR" className="form-check-input" name="displayIQR" type="checkbox" onChange={(e) => handleIQRParamChange(e)}/>
+            </form>
+            <form>
+                <div className="circle-display-div">
+                    <label>Cluster Circle Display:&nbsp;</label>
+                    <input type="radio" name="circleDisplay" value="normalized" onClick={(e) => handleCircleDisplayParamChange(e)} defaultChecked />
+                    <img src={legendContinuous} />
+                    <input type="radio" name="circleDisplay" value="iqr" onClick={(e) => handleCircleDisplayParamChange(e)} />
+                    <img src={legendDiscrete} />
                 </div>
             </form>
             </div>

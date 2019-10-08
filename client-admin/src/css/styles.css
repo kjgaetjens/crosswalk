@@ -34,6 +34,14 @@ h2 {
     padding-left: 10px;
 }
 
+.circle-display-div {
+    margin-top: 15px;
+}
+
+.circle-display-div input {
+    margin-left: 15px;
+}
+
 .csv-link {
     margin-right: 15px;
 }
