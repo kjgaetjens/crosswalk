@@ -71,3 +71,7 @@ h2 {
 .login input {
     width: 500px;
 }
+
+.data-row:hover {
+    cursor: pointer;
+}

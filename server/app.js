@@ -194,8 +194,6 @@ app.get('/sessions/:sessionid/dashboard/:radius/:minPoints', async (req,res) => 
         clusterObj.push({"id": `c${i+1}`, "count": clusterCoordinates.length, "coordinates": clusterCoordinates, "centerPoint": nearestToTrueCenterObj})
     }
 
-    clusterObj.sort((a, b) => {return b.count-a.count})
-
     let noise = dbscan.noise
 
     let noiseCoordinates = noise.map(noiseOrder => {
