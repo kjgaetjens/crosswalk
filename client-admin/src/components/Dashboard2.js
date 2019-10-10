@@ -1,5 +1,5 @@
-import React, {useEffect} from 'react'
-import {withScriptjs, withGoogleMap, GoogleMap, Circle, Marker} from 'react-google-maps'
+import React, {useState, useEffect} from 'react'
+import {withScriptjs, withGoogleMap, GoogleMap, InfoWindow, Marker} from 'react-google-maps'
 import {determineIQR} from './componentFunctions/IQR'
 import * as env from '../env'
 
@@ -8,6 +8,16 @@ const Map = withScriptjs(withGoogleMap((props) => {
     var mapElement = null
     const setMapElementRef = element => {
         mapElement = element
+    }
+
+    const [infoWindowCluster, setInfoWindowCluster] = useState('')
+    
+    const handleInfoToggle = (clusterId) => {
+        setInfoWindowCluster(clusterId)
+    }
+
+    const handleInfoClose = () => {
+        setInfoWindowCluster('')
     }
 
     //this adjust map was implemented to adjust boundaries to visible markers
@@ -54,14 +64,14 @@ const Map = withScriptjs(withGoogleMap((props) => {
         if (props.dashboardInfo.clusters.length > 0) {
             const {quartileOneArray, quartileTwoArray, quartileThreeArray} = determineIQR(props.dashboardInfo.clusters)
             let markerArray = []
-            quartileOneArray.forEach((cluster, i) => {
-                markerArray.push(<Marker key={`a${i}`} position={{ lat: cluster.centerPoint.latitude, lng: cluster.centerPoint.longitude}} icon={{path: 'M-20,0a20,20 0 1,0 40,0a20,20 0 1,0 -40,0', strokeColor:'#FF0000', strokeOpacity:0.8, strokeWeight:2, fillColor:'#FF0000', fillOpacity:0.35, scale:.4}} />)
+            quartileOneArray.forEach((cluster) => {
+                markerArray.push(<Marker key={cluster.id} position={{ lat: cluster.centerPoint.latitude, lng: cluster.centerPoint.longitude}} icon={{path: 'M-20,0a20,20 0 1,0 40,0a20,20 0 1,0 -40,0', strokeColor:'#FF0000', strokeOpacity:0.8, strokeWeight:2, fillColor:'#FF0000', fillOpacity:0.35, scale:.4}} onClick={() => handleInfoToggle(cluster.id)} >{infoWindowCluster == cluster.id ? <InfoWindow onCloseClick={() => handleInfoClose()}><div><h6>{cluster.centerPoint.address}</h6><h6>Count: {cluster.count}</h6></div></InfoWindow> : null}</Marker>)
             })
-            quartileTwoArray.forEach((cluster, i) => {
-                markerArray.push(<Marker key={`b${i}`} position={{ lat: cluster.centerPoint.latitude, lng: cluster.centerPoint.longitude}} icon={{path: 'M-20,0a20,20 0 1,0 40,0a20,20 0 1,0 -40,0', strokeColor:'#FF0000', strokeOpacity:0.8, strokeWeight:2, fillColor:'#FF0000', fillOpacity:0.35, scale:.8}} />)
+            quartileTwoArray.forEach((cluster) => {
+                markerArray.push(<Marker key={cluster.id} position={{ lat: cluster.centerPoint.latitude, lng: cluster.centerPoint.longitude}} icon={{path: 'M-20,0a20,20 0 1,0 40,0a20,20 0 1,0 -40,0', strokeColor:'#FF0000', strokeOpacity:0.8, strokeWeight:2, fillColor:'#FF0000', fillOpacity:0.35, scale:.8}} onClick={() => handleInfoToggle(cluster.id)} >{infoWindowCluster == cluster.id ? <InfoWindow onCloseClick={() => handleInfoClose()}><div><h6>{cluster.centerPoint.address}</h6><h6>Count: {cluster.count}</h6></div></InfoWindow> : null}</Marker>)
             })
-            quartileThreeArray.forEach((cluster, i) => {
-                markerArray.push(<Marker key={`c${i}`} position={{ lat: cluster.centerPoint.latitude, lng: cluster.centerPoint.longitude}} icon={{path: 'M-20,0a20,20 0 1,0 40,0a20,20 0 1,0 -40,0', strokeColor:'#FF0000', strokeOpacity:0.8, strokeWeight:2, fillColor:'#FF0000', fillOpacity:0.35, scale:1.2}} />)
+            quartileThreeArray.forEach((cluster) => {
+                markerArray.push(<Marker key={cluster.id} position={{ lat: cluster.centerPoint.latitude, lng: cluster.centerPoint.longitude}} icon={{path: 'M-20,0a20,20 0 1,0 40,0a20,20 0 1,0 -40,0', strokeColor:'#FF0000', strokeOpacity:0.8, strokeWeight:2, fillColor:'#FF0000', fillOpacity:0.35, scale:1.2}} onClick={() => handleInfoToggle(cluster.id)} >{infoWindowCluster == cluster.id ? <InfoWindow onCloseClick={() => handleInfoClose()}><div><h6>{cluster.centerPoint.address}</h6><h6>Count: {cluster.count}</h6></div></InfoWindow> : null}</Marker>)
             })
             return (markerArray)
         }
@@ -72,7 +82,7 @@ const Map = withScriptjs(withGoogleMap((props) => {
     }
 
     const createCircles = () => {
-        return props.dashboardInfo.clusters.map((cluster, i) => <Marker key={i} position={{ lat: cluster.centerPoint.latitude, lng: cluster.centerPoint.longitude}} icon={{path: 'M-20,0a20,20 0 1,0 40,0a20,20 0 1,0 -40,0', strokeColor:'#FF0000', strokeOpacity:0.8, strokeWeight:2, fillColor:'#FF0000', fillOpacity:0.35, scale:determineScale(props.dashboardInfo.range, props.dashboardInfo.min, cluster.count)}} />)
+return props.dashboardInfo.clusters.map((cluster) => <Marker key={cluster.id} position={{ lat: cluster.centerPoint.latitude, lng: cluster.centerPoint.longitude}} icon={{path: 'M-20,0a20,20 0 1,0 40,0a20,20 0 1,0 -40,0', strokeColor:'#FF0000', strokeOpacity:0.8, strokeWeight:2, fillColor:'#FF0000', fillOpacity:0.35, scale:determineScale(props.dashboardInfo.range, props.dashboardInfo.min, cluster.count)}}  onClick={() => handleInfoToggle(cluster.id)}>{infoWindowCluster == cluster.id ? <InfoWindow onCloseClick={() => handleInfoClose()}><div><h6>{cluster.centerPoint.address}</h6><h6>Count: {cluster.count}</h6></div></InfoWindow> : null}</Marker>)
     }
 
     const createCirclesNoise = () => {
@@ -86,18 +96,11 @@ const Map = withScriptjs(withGoogleMap((props) => {
         return size
     }
 
-
-    useEffect(() => {
-        adjustMapTwo()
-    }, [])
-
-
-    return (
+    const renderMap = () => {
+        return (
         <React.Fragment>
             <GoogleMap
                 google={props.google}
-                // defaultZoom={11}
-                // defaultCenter={{ lat: 47.444, lng: -122.176}}
                 ref={setMapElementRef}
                 options={{gestureHandling:'cooperative'}}
             >
@@ -106,9 +109,28 @@ const Map = withScriptjs(withGoogleMap((props) => {
                 {props.displayNoise && props.circleDisplay == 'normalized' ? createCirclesNoise() : null}
                 {props.displayNoise && props.circleDisplay == 'iqr' ? createIQRMarkersNoise() : null}
             </GoogleMap>
-            <button className="zoom-button" onClick={() => adjustMapTwo()}>Zoom to Clusters</button> 
+            <button className="zoom-button" onClick={() => adjustMapTwo()}>Zoom to Clusters</button>
+            <h1>{props.testfunction}</h1> 
         </React.Fragment>
+        )
+    }
 
+
+    useEffect(() => {
+        adjustMapTwo()
+    }, [props.dashboardInfo])
+
+    useEffect(() => {
+        adjustMapTwo()
+        setInfoWindowCluster(props.selectedMarker)
+        window.scrollTo({top:0, left:0, behavior:'smooth'})
+    }, [props.selectedMarker])
+
+
+    return (
+        <React.Fragment>
+        {renderMap()}
+        </React.Fragment>
     )
 
 
