@@ -51,6 +51,8 @@ export function determineIQR(inputArray) {
         quartileThreeArray.push(datum)
       }
     })
+
+    dataArray.sort(function(a,b){return b.count-a.count})
   
     return {quartileOneArray, quartileTwoArray, quartileThreeArray}
   

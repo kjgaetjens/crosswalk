@@ -60,6 +60,7 @@ const Dashboard = (props) => {
             clusterMin = Math.min(...clusterCountArray)
             clusterRange = clusterMax-clusterMin
         }
+        dashboardObj.clusters.sort((a, b) => {return b.count-a.count})
 
         setDashboardInfo({range: clusterRange, min: clusterMin, ...dashboardObj})
         getClusteredCsvData(dashboardObj)
@@ -202,7 +203,7 @@ const Dashboard = (props) => {
                 <tbody>
                 {dashboardInfo.clusters.map(cluster => {
                     return (
-                        <tr onClick={() => setSelectedMarker(cluster.id)}>
+                        <tr className="data-row" onClick={() => setSelectedMarker(cluster.id)}>
                             <td>{cluster.count}</td>
                             <td>{cluster.coordinates.map(coordinate => {
                                 return `(${coordinate.longitude}, ${coordinate.latitude}), `

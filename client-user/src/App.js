@@ -40,7 +40,7 @@ function App(props) {
   
   return (
     <div className="addLocation">
-      <h2>Walkable</h2>
+      <h1>Walkable</h1>
       <button className="btn btn-primary btn-block" onClick={() => sendLocation()}><h1>I want to cross here</h1></button>
     </div>
   );
