@@ -4,6 +4,8 @@ const app = express()
 global.models = require('./models')
 require('dotenv').config()
 const PORT = process.env.PORT
+const GOOGLE_MAPS_API_KEY = process.env.GOOGLE_MAPS_API_KEY
+const axios = require('axios')
 var jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt')
 const authenticate = require('./authentication')
@@ -180,10 +182,18 @@ app.get('/sessions/:sessionid/dashboard/:radius/:minPoints', async (req,res) => 
         let trueCenter = getCenterPoint(rawClusterArray[i])
         var lookup = sphereKnn(rawClusterArray[i])
         var nearestToTrueCenter = lookup(trueCenter[0], trueCenter[1], 1)
-        let nearestToTrueCenterObj = {"latitude": nearestToTrueCenter[0][0],"longitude": nearestToTrueCenter[0][1]}
+        let centerLat = nearestToTrueCenter[0][0]
+        let centerLng = nearestToTrueCenter[0][1]
 
-        clusterObj.push({"count": clusterCoordinates.length, "coordinates": clusterCoordinates, "centerPoint": nearestToTrueCenterObj})
+        let result = await axios(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${centerLat},${centerLng}&key=${GOOGLE_MAPS_API_KEY}`)
+
+        let centerAddress = result.data.results[0].formatted_address
+
+        let nearestToTrueCenterObj = {"latitude": centerLat,"longitude": centerLng, "address": centerAddress}
+
+        clusterObj.push({"id": `c${i+1}`, "count": clusterCoordinates.length, "coordinates": clusterCoordinates, "centerPoint": nearestToTrueCenterObj})
     }
+
     clusterObj.sort((a, b) => {return b.count-a.count})
 
     let noise = dbscan.noise

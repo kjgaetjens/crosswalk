@@ -30,6 +30,14 @@ h2 {
     position: absolute;
 }
 
+.centerCoordinateColumn {
+    min-width: 250px;
+}
+
+.addressColumn {
+    min-width: 400px;
+}
+
 .clusterParams label {
     padding-left: 10px;
 }

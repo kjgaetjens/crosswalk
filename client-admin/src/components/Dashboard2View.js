@@ -10,7 +10,6 @@ import legendContinuous from '../images/legendContinuous.jpg'
 
 const Dashboard = (props) => {
 
-
     const [error, setError] = useState("")
     const [directions, setDirections] = useState({
         active: false,
@@ -21,14 +20,9 @@ const Dashboard = (props) => {
     const [dashboardInfo, setDashboardInfo] = useState({range: 0, min: 0, clusters: [], noise: {}})
     const [rawCsvData, setRawCsvData] = useState({content: []})
     const [clusteredCsvData, setClusteredCsvData] = useState({content: []})
+    const [selectedMarker, setSelectedMarker] = useState('')
     
     const sessionId = props.match.params.sessionid
-
-
-
-
-
-
 
 
     const handleParamChange = (e) => {
@@ -113,7 +107,8 @@ const Dashboard = (props) => {
                         <tr className="noiserow">
                             <td>1</td>
                             <td>({coordinate.longitude}, {coordinate.latitude})</td>
-                            <td></td>
+                            <td>NA</td>
+                            <td>NA</td>
                         </tr>
                         )
                     })
@@ -143,6 +138,7 @@ const Dashboard = (props) => {
                             displayNoise={dashboardParams.displayNoise}
                             circleDisplay={dashboardParams.circleDisplay}
                             rawCsvData={rawCsvData}
+                            selectedMarker={selectedMarker}
                             loadingElement={<div className='loadingElement'style={{ height: `100%` }}>Map is Loading....</div>}
                             // initialCenter={{ lat: 47.444, lng: -122.176}}
                             containerElement={<div className='containerElement' />}
@@ -161,7 +157,7 @@ const Dashboard = (props) => {
     useEffect(() => {
         getDashboardInfo()
         getRawCsvData()
-    }, [dashboardParams])
+    }, [dashboardParams, selectedMarker])
 
 
     return (
@@ -190,7 +186,6 @@ const Dashboard = (props) => {
             </div>
 
             {renderMap()}
-
             <div className="dashboardTable">
             <h2>Cluster Data</h2>
             <CSVLink className="csv-link" filename={"raw.csv"} data={rawCsvData.content}>Download Raw Data</CSVLink>
@@ -201,17 +196,19 @@ const Dashboard = (props) => {
                         <th scope="col">Count</th>
                         <th scope="col">Coordinates (lng, lat)</th>
                         <th scope="col">Nearest to Center (lng, lat)</th>
+                        <th scope="col">Address Nearest to Center (approx.)</th>
                     </tr>
                 </thead>
                 <tbody>
                 {dashboardInfo.clusters.map(cluster => {
                     return (
-                        <tr>
+                        <tr onClick={() => setSelectedMarker(cluster.id)}>
                             <td>{cluster.count}</td>
                             <td>{cluster.coordinates.map(coordinate => {
-                                return `(${coordinate.longitude}, ${coordinate.latitude}) `
+                                return `(${coordinate.longitude}, ${coordinate.latitude}), `
                             })}</td>
-                            <td>({cluster.centerPoint.longitude}, {cluster.centerPoint.latitude})</td>
+                            <td className="centerCoordinateColumn">({cluster.centerPoint.longitude}, {cluster.centerPoint.latitude})</td>
+                            <td className="addressColumn">{cluster.centerPoint.address}</td>
                         </tr>
                         )
                     })}
