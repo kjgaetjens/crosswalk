@@ -5,8 +5,8 @@ import GoogleApi from '../utils/GoogleApiComponent'
 import {CSVLink} from 'react-csv'
 import * as env from '../env'
 import axios from 'axios'
-import legendDiscrete from '../images/legendDiscrete.jpg'
-import legendContinuous from '../images/legendContinuous.jpg'
+import legendDiscrete from '../images/legendDiscrete2.jpg'
+import legendContinuous from '../images/legendContinuous2.jpg'
 
 const Dashboard = (props) => {
 
@@ -128,25 +128,22 @@ const Dashboard = (props) => {
             (dashboardParams.displayNoise == false && dashboardInfo.clusters.length > 0)
             ) {
             return (
-                <div>
-                    <h2>Cluster Map</h2>
-                    <div className="mapDiv">
-                        <Map
-                            center={{ lat: 47.444, lng: -122.176}}
-                            google={props.google}
-                            googleMapURL={toString(GoogleApi({}))}
-                            dashboardInfo={dashboardInfo}
-                            displayNoise={dashboardParams.displayNoise}
-                            circleDisplay={dashboardParams.circleDisplay}
-                            rawCsvData={rawCsvData}
-                            selectedMarker={selectedMarker}
-                            loadingElement={<div className='loadingElement'style={{ height: `100%` }}>Map is Loading....</div>}
-                            // initialCenter={{ lat: 47.444, lng: -122.176}}
-                            containerElement={<div className='containerElement' />}
-                            mapElement={<div className='mapElement' />}
-                        />
-                    </div> 
-                </div>
+                <div className="mapDiv">
+                    <Map
+                        center={{ lat: 47.444, lng: -122.176}}
+                        google={props.google}
+                        googleMapURL={toString(GoogleApi({}))}
+                        dashboardInfo={dashboardInfo}
+                        displayNoise={dashboardParams.displayNoise}
+                        circleDisplay={dashboardParams.circleDisplay}
+                        rawCsvData={rawCsvData}
+                        selectedMarker={selectedMarker}
+                        loadingElement={<div className='loadingElement'style={{ height: `100%` }}>Map is Loading....</div>}
+                        // initialCenter={{ lat: 47.444, lng: -122.176}}
+                        containerElement={<div className='containerElement' />}
+                        mapElement={<div className='mapElement' />}
+                    />
+                </div> 
                 )
         } else {
             return <div className="mapDiv">Loading.....</div>
@@ -163,37 +160,53 @@ const Dashboard = (props) => {
 
     return (
         <div className="dashboard">
-            <div className="clusterParams">
-            <h2>Cluster Parameters</h2>
-            <form className="form-inline">
-                <label htmlFor="radiusParam">Cluster Radius(approx. meters):&nbsp;</label>
-                <input id="radiusParam" className="form-control" name="radius" min="0" step="10" placeholder={dashboardParams.radius} value={dashboardParams.radius} type="number" onChange={(e) => handleParamChange(e)}/>
-                <label htmlFor="minPointsParam">Cluster Minimum Points:&nbsp;</label>
-                <input id="minPointsParam" className="form-control" name="minPoints" type="number" min="1" step="1" placeholder={dashboardParams.minPoints}value={dashboardParams.minPoints} onChange={(e) => handleParamChange(e)}/>
-                <div className="form-check">
-                    <label htmlFor="displayNoise" className="form-check-label">Show Noise:&nbsp;</label>
-                    <input id="displayNoiseParam" className="form-check-input" name="displayNoise" type="checkbox" onChange={(e) => handleNoiseParamChange(e)}/>
+            <h2>Cluster Map</h2>
+            <div className="map-container">
+                <div className="clusterParams">
+                <form>
+                    <h5>Clustering</h5>
+                    <div className="cluster-size-div">
+                        <label htmlFor="radiusParam">Cluster Radius (approx. meters):&nbsp;</label>
+                        <input id="radiusParam" className="form-control" name="radius" min="0" step="10" placeholder={dashboardParams.radius} value={dashboardParams.radius} type="number" onChange={(e) => handleParamChange(e)}/>
+                        <label htmlFor="minPointsParam">Cluster Minimum Points:&nbsp;</label>
+                        <input id="minPointsParam" className="form-control" name="minPoints" type="number" min="1" step="1" placeholder={dashboardParams.minPoints}value={dashboardParams.minPoints} onChange={(e) => handleParamChange(e)}/>
+                    </div>
+                    <div className="line-div"></div>
+                    <h5>Noise</h5>
+                    <div className="cluster-noise-div">
+                        <label htmlFor="displayNoise">Show Noise:&nbsp;</label>
+                        <input id="displayNoiseParam" name="displayNoise" type="checkbox" onChange={(e) => handleNoiseParamChange(e)}/>
+                    </div>
+                </form>
+                <form>
+                    <div className="line-div"></div>
+                    <h5>Representation</h5>
+                    <div className="circle-display-div">
+                        <label>Cluster Circle Display:&nbsp;</label>
+                        <div className="circle-display-section">
+                            <input id="normalized" type="radio" name="circleDisplay" value="normalized" onClick={(e) => handleCircleDisplayParamChange(e)} defaultChecked />
+                            <label htmlFor="normalized">Continuous Normalized Size </label>
+                        </div>
+                        <img src={legendContinuous} />
+                        <div className="circle-display-section">
+                            <input id="iqr" type="radio" name="circleDisplay" value="iqr" onClick={(e) => handleCircleDisplayParamChange(e)} />
+                            <label htmlFor="iqr">Discrete Interquartile Range (IQR) Size </label>
+                        </div>
+                        <img src={legendDiscrete} />
+                    </div>
+                </form>
                 </div>
-            </form>
-            <form>
-                <div className="circle-display-div">
-                    <label>Cluster Circle Display:&nbsp;</label>
-                    <input type="radio" name="circleDisplay" value="normalized" onClick={(e) => handleCircleDisplayParamChange(e)} defaultChecked />
-                    <img src={legendContinuous} />
-                    <input type="radio" name="circleDisplay" value="iqr" onClick={(e) => handleCircleDisplayParamChange(e)} />
-                    <img src={legendDiscrete} />
-                </div>
-            </form>
+
+                {renderMap()}
             </div>
 
-            {renderMap()}
             <div className="dashboardTable">
             <h2>Cluster Data</h2>
             <CSVLink className="csv-link" filename={"raw.csv"} data={rawCsvData.content}>Download Raw Data</CSVLink>
             <CSVLink className="csv-link" filename={"clusters.csv"} data={clusteredCsvData.content}>Download Cluster Data</CSVLink>
             <table className="table table-bordered table-hover">
                 <thead>
-                    <tr className="thead-light">
+                    <tr className="thead-row">
                         <th scope="col">Count</th>
                         <th scope="col">Coordinates (lng, lat)</th>
                         <th scope="col">Nearest to Center (lng, lat)</th>

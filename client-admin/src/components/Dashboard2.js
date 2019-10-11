@@ -108,9 +108,8 @@ return props.dashboardInfo.clusters.map((cluster) => <Marker key={cluster.id} po
                 
                 {props.displayNoise && props.circleDisplay == 'normalized' ? createCirclesNoise() : null}
                 {props.displayNoise && props.circleDisplay == 'iqr' ? createIQRMarkersNoise() : null}
+                <button className="zoom-button btn" onClick={() => adjustMapTwo()}>Zoom to Clusters</button>
             </GoogleMap>
-            <button className="zoom-button" onClick={() => adjustMapTwo()}>Zoom to Clusters</button>
-            <h1>{props.testfunction}</h1> 
         </React.Fragment>
         )
     }
