@@ -5,8 +5,8 @@ import GoogleApi from '../utils/GoogleApiComponent'
 import {CSVLink} from 'react-csv'
 import * as env from '../env'
 import axios from 'axios'
-import legendDiscrete from '../images/legendDiscrete2.jpg'
-import legendContinuous from '../images/legendContinuous2.jpg'
+import legendDiscrete from '../images/legendDiscrete.png'
+import legendContinuous from '../images/legendContinuous.png'
 
 const Dashboard = (props) => {
 
@@ -166,7 +166,7 @@ const Dashboard = (props) => {
                 <form>
                     <h5>Clustering</h5>
                     <div className="cluster-size-div">
-                        <label htmlFor="radiusParam">Cluster Radius (approx. meters):&nbsp;</label>
+                        <label htmlFor="radiusParam">Cluster Radius (~ meters):&nbsp;</label>
                         <input id="radiusParam" className="form-control" name="radius" min="0" step="10" placeholder={dashboardParams.radius} value={dashboardParams.radius} type="number" onChange={(e) => handleParamChange(e)}/>
                         <label htmlFor="minPointsParam">Cluster Minimum Points:&nbsp;</label>
                         <input id="minPointsParam" className="form-control" name="minPoints" type="number" min="1" step="1" placeholder={dashboardParams.minPoints}value={dashboardParams.minPoints} onChange={(e) => handleParamChange(e)}/>
@@ -174,23 +174,25 @@ const Dashboard = (props) => {
                     <div className="line-div"></div>
                     <h5>Noise</h5>
                     <div className="cluster-noise-div">
-                        <label htmlFor="displayNoise">Show Noise:&nbsp;</label>
-                        <input id="displayNoiseParam" name="displayNoise" type="checkbox" onChange={(e) => handleNoiseParamChange(e)}/>
+                        <label className="display-noise-label" htmlFor="displayNoise">Show Noise:&nbsp;</label>
+                        <label className="switch">
+                            <input id="displayNoiseParam" name="displayNoise" type="checkbox" onChange={(e) => handleNoiseParamChange(e)}/>
+                            <span className="slider"></span>
+                        </label>
                     </div>
                 </form>
                 <form>
                     <div className="line-div"></div>
                     <h5>Representation</h5>
                     <div className="circle-display-div">
-                        <label>Cluster Circle Display:&nbsp;</label>
                         <div className="circle-display-section">
                             <input id="normalized" type="radio" name="circleDisplay" value="normalized" onClick={(e) => handleCircleDisplayParamChange(e)} defaultChecked />
-                            <label htmlFor="normalized">Continuous Normalized Size </label>
+                            <label htmlFor="normalized">Continuous Normalized</label>
                         </div>
                         <img src={legendContinuous} />
                         <div className="circle-display-section">
                             <input id="iqr" type="radio" name="circleDisplay" value="iqr" onClick={(e) => handleCircleDisplayParamChange(e)} />
-                            <label htmlFor="iqr">Discrete Interquartile Range (IQR) Size </label>
+                            <label htmlFor="iqr">Discrete Interquartile Range (IQR)</label>
                         </div>
                         <img src={legendDiscrete} />
                     </div>
@@ -204,7 +206,7 @@ const Dashboard = (props) => {
             <h2>Cluster Data</h2>
             <CSVLink className="csv-link" filename={"raw.csv"} data={rawCsvData.content}>Download Raw Data</CSVLink>
             <CSVLink className="csv-link" filename={"clusters.csv"} data={clusteredCsvData.content}>Download Cluster Data</CSVLink>
-            <table className="table table-bordered table-hover">
+            <table className="table table-hover">
                 <thead>
                     <tr className="thead-row">
                         <th scope="col">Count</th>
