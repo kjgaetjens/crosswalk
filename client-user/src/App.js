@@ -25,7 +25,7 @@ function App(props) {
 
     const error = () => {
       //set status and display on page
-      console.log('unable to retrieve location 2')
+      console.log('unable to retrieve location')
     }
 
     if (!navigator.geolocation) {
@@ -41,7 +41,9 @@ function App(props) {
   return (
     <div className="addLocation">
       <h1>Walkable</h1>
-      <button className="btn btn-primary btn-block" onClick={() => sendLocation()}><h1>I want to cross here</h1></button>
+      <div className="button-div">
+        <button className="btn btn-block" onClick={() => sendLocation()}><h1>I Want To Cross Here</h1></button>
+      </div>
     </div>
   );
 }
