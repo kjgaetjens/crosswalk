@@ -165,16 +165,20 @@ const Dashboard = (props) => {
                 <div className="clusterParams">
                 <form>
                     <h5>Clustering</h5>
+                    <i className="fas fa-info-circle"><span className="tooltiptext">Clusters are groups of nearby coordinates (eg. multiple requests for crosswalks within 100 meters).<br/><br/>
+                    <strong>Radius</strong>: How close together coordinates need to be to be considered a cluster.<br/><br/>
+                    <strong>Minimum Points</strong>: How many coordinates need to be within a radius to be considered a cluster. </span></i>
                     <div className="cluster-size-div">
-                        <label htmlFor="radiusParam">Cluster Radius (~ meters):&nbsp;</label>
+                        <label htmlFor="radiusParam">Radius (~ meters):&nbsp;</label>
                         <input id="radiusParam" className="form-control" name="radius" min="0" step="10" placeholder={dashboardParams.radius} value={dashboardParams.radius} type="number" onChange={(e) => handleParamChange(e)}/>
-                        <label htmlFor="minPointsParam">Cluster Minimum Points:&nbsp;</label>
+                        <label htmlFor="minPointsParam">Minimum Points:&nbsp;</label>
                         <input id="minPointsParam" className="form-control" name="minPoints" type="number" min="1" step="1" placeholder={dashboardParams.minPoints}value={dashboardParams.minPoints} onChange={(e) => handleParamChange(e)}/>
                     </div>
                     <div className="line-div"></div>
                     <h5>Noise</h5>
+                    <i className="fas fa-info-circle"><span className="tooltiptext">Noise includes individual coordinates that are not part of clusters.</span></i>
                     <div className="cluster-noise-div">
-                        <label className="display-noise-label" htmlFor="displayNoise">Show Noise:&nbsp;</label>
+                        <label htmlFor="displayNoise">Show Noise:&nbsp;</label>
                         <label className="switch">
                             <input id="displayNoiseParam" name="displayNoise" type="checkbox" onChange={(e) => handleNoiseParamChange(e)}/>
                             <span className="slider"></span>
@@ -184,6 +188,9 @@ const Dashboard = (props) => {
                 <form>
                     <div className="line-div"></div>
                     <h5>Representation</h5>
+                    <i className="fas fa-info-circle"><span className="tooltiptext">Clusters are represented by circles with sizes relative to the number of coordinates in each cluster.<br/><br/>
+                    <strong>Continuous Normalized</strong>: Size directly related to the number of coordinates in the cluster.<br/><br/>
+                    <strong>Discrete Interquartile Range (IQR)</strong>: Small, medium, or large size depending on if the number of coordinates in the cluster falls below, within, or above the interquartile range.</span></i>
                     <div className="circle-display-div">
                         <div className="circle-display-section">
                             <input id="normalized" type="radio" name="circleDisplay" value="normalized" onClick={(e) => handleCircleDisplayParamChange(e)} defaultChecked />
@@ -216,9 +223,9 @@ const Dashboard = (props) => {
                     </tr>
                 </thead>
                 <tbody>
-                {dashboardInfo.clusters.map(cluster => {
+                {dashboardInfo.clusters.map((cluster,i) => {
                     return (
-                        <tr className="data-row" onClick={() => setSelectedMarker(cluster.id)}>
+                        <tr key={i} className="data-row" onClick={() => setSelectedMarker(cluster.id)}>
                             <td>{cluster.count}</td>
                             <td>{cluster.coordinates.map(coordinate => {
                                 return `(${coordinate.longitude}, ${coordinate.latitude}), `
