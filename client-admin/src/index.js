@@ -2,9 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import {BrowserRouter, Route, Switch} from 'react-router-dom'
 import './index.css';
-// import App from './App';
 import Sessions from './components/Sessions'
-import Session from './components/Session'
 import Dashboard from './components/Dashboard2View'
 import * as serviceWorker from './serviceWorker';
 import Register from './components/Register'
@@ -31,7 +29,6 @@ ReactDOM.render(
                 <Route path="/register" component={Register} />
                 <Route exact path="/" component={Login} />
                 <Route exact path="/sessions" component={requireAuth(Sessions)} />
-                <Route exact path="/sessions/:sessionid" component={requireAuth(Session)} />
                 <Route path="/sessions/:sessionid/dashboard" component={requireAuth(Dashboard)} />
             </Switch>
         </BaseLayout>

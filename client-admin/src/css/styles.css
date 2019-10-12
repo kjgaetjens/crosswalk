@@ -2,7 +2,16 @@ h2 {
     margin-top: 15px;
 }
 
-.addSession button {
+.add-session-div {
+    position: relative;
+    top: 22px;
+}
+
+.add-session-div input {
+    margin-left: 10px;
+}
+
+.add-session-div button {
     margin-left: 10px;
 }
 
@@ -11,6 +20,11 @@ h2 {
 }
 
 .dashboard {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.sessions {
     padding-left: 10px;
     padding-right: 10px;
 }
@@ -27,7 +41,7 @@ label {
 }
 
 .mapDiv {
-    height: 718px;
+    height: 685px;
     width: 100%;
 }
 
@@ -35,7 +49,7 @@ label {
     height: 100%;
 }
 .mapElement {
-    height: 718px; 
+    height: 685px; 
 }
 
 .zoom-button {
@@ -63,27 +77,67 @@ label {
     min-width: 400px;
 }
 
-.table {
-    box-shadow: 0 0 1px black;
-}
-
 .thead-row {
-    background-color:lightsteelblue;
+    background-color:#dee6ef;
 }
 
 .clusterParams {
     width: 290px;
-    height: 718px;
+    height: 685px;
     padding: 7px 20px;
-    overflow: scroll;
-    background-color:lightsteelblue;
+    background-color:#dee6ef;
     border-right: solid 2px white;
 }
 
+.clusterParams label {
+    margin-bottom: .25em;
+}
+
+.clusterParams .cluster-noise-div label {
+    margin-right: 10px;
+    margin-bottom: 0;
+    margin-top: 0;
+}
+
+
+
 h5 {
-    margin-top: 20px;
     font-weight: 600;
 }
+
+.dashboard h5 {
+    margin-top: 20px;
+    display: inline-block;
+    margin-right: 10px;
+}
+
+.fa-info-circle {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .fa-info-circle .tooltiptext {
+    visibility: hidden;
+    width: 215px;
+    background-color: white;
+    color: black;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    font-weight: normal;
+    font-size: 15px;
+    text-align: left;
+    padding: 8px 10px;
+    border-radius: 6px;
+    box-shadow: 0 0 2px black;
+   
+    position: absolute;
+    top: -5px;
+    left: 150%;
+    z-index: 1;
+  }
+  
+  .fa-info-circle:hover .tooltiptext {
+    visibility: visible;
+  }
 
 .line-div {
     background-color: white;
@@ -116,7 +170,7 @@ h5 {
 
 .navbar {
     box-shadow: 0 0 2px black;
-    background-color: lightsteelblue;
+    background-color: steelblue;
 }
 
 .navbar-brand a {
@@ -129,6 +183,7 @@ h5 {
     padding-right: 10px;
     color: white;
     font-weight: bold;
+    text-decoration: none;
 }
 
 .login {
@@ -142,10 +197,6 @@ h5 {
 
 .data-row:hover {
     cursor: pointer;
-}
-
-.display-noise-label {
-    margin-right: 10px;
 }
 
 .switch {
@@ -188,11 +239,11 @@ h5 {
   }
   
   input:checked + .slider {
-    background-color: #933692;
+    background-color: #ae5dad;
   }
   
   input:focus + .slider {
-    box-shadow: 0 0 1px #933692;
+    box-shadow: 0 0 1px #ae5dad;
   }
   
   input:checked + .slider:before {
@@ -200,3 +251,26 @@ h5 {
     -ms-transform: translateX(26px);
     transform: translateX(26px);
   }
+
+  .activate, .deactivate {
+      width: 115px;
+  }
+
+  .lightsteelblue-row {
+      background-color: #dee6ef;
+  }
+
+  .sessions-list-table-div {
+    max-height: 506px;
+    overflow: scroll;
+    box-shadow: 0 0 1px black;
+  }
+
+  .sessions-table {
+      font-weight: bold;
+  }
+
+  .sessions-table td {
+      vertical-align: middle;
+  }
+
