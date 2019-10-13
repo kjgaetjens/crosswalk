@@ -1,22 +1,63 @@
-.addLocation {
-    height: 100vh;
-    text-align: center;
+.header-div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 20vh;
 }
 
-.addLocation > h1 {
-    margin-top: 30px;
+.header-div  h1 {
+    margin: 0;
     font-size: 4em;
 }
 
+.alert-div {
+    height: 20vh;
+    display: flex;
+    justify-content: center;
+}
+
+.walkable-alert {
+    height: 40px;
+    width: 90%;
+    border-radius: 5px;
+    padding: 5px 0px 5px 8px;
+    display: flex;
+    align-items: center;
+}
+
+.walkable-alert > div {
+    width: 100%;
+}
+
+.walkable-alert div {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.message-div {
+    width: 92%;
+    text-align: center;
+    padding-left: 8%;
+}
+
+.close-button-div {
+    width: 8%;
+    float: right;
+}
+
+.close-button-div button {
+    font-weight: bold;
+}
+
 .button-div {
-    height: 100%;
+    height: 60vh;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
 }
 
-.addLocation button{
+.button-div button{
     width: 300px;
     height: 300px;
     border-radius: 150px;
@@ -24,4 +65,11 @@
     box-shadow: 0 6px 42px rgba(0, 0, 0, 0.36), 0 9px 15px rgba(0, 0, 0, 0.28);
     background-color: steelblue;
     color: white;
+    border: solid 2px steelblue;
+}
+
+.button-div button:focus{
+    background-color: white;
+    color: steelblue;
+    border: solid 2px steelblue;
 }

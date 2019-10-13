@@ -1,48 +1,62 @@
-import React from 'react';
+import React,{useState} from 'react';
 
-//maybe move this into another component
 
 function App(props) {
 
   const session = props.match.params.session
+  const [alert, setAlert] = useState({type:'', message:''})
 
-  //could control state of current location or could just send onclick
   const sendLocation = () => {
+
+    setAlert({type:'alert-info', message:'Sending your location...'})
 
     const success = (position) => {
       const latitude = position.coords.latitude
       const longitude = position.coords.longitude
 
-      //how to make it fetch the appropriate url? grab the current url and extract a string and store it in state?
       fetch(`http://localhost:3001/add-location`, {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({"sessionname": session, "lat": latitude, "long": longitude})
+      }).then(response => {
+        if (!response.ok) {
+          setAlert({type:'alert-danger', message:'Unable to send your location.'})
+        }
+        return response
+      }).then(response => {
+        setAlert({type:'alert-success', message:'Success! Thank you for participating!'})
+      }).catch(error => {
+        setAlert({type:'alert-danger', message:'Unable to send your location.'})
       })
 
-      //update status to say it was sent succesfully
     }
 
     const error = () => {
-      //set status and display on page
-      console.log('unable to retrieve location')
+      setAlert({type:'alert-danger', message:'Unable to retrieve location.'})
     }
 
     if (!navigator.geolocation) {
-      //set status an display on page
-      console.log('unable to retrieve location')
+      setAlert({type:'alert-danger', message:'Unable to retrieve location.'})
     } else {
-      //set status and display on page
-      console.log('locating')
       navigator.geolocation.getCurrentPosition(success,error)
     }
   }
   
   return (
     <div className="addLocation">
-      <h1>Walkable</h1>
+      <div className="header-div">
+        <h1>Walkable</h1>
+      </div>
+      <div className="alert-div">
+        {alert.type ? <div className={`walkable-alert ${alert.type}`}>
+                        <div>
+                          <div className="message-div">{alert.message}</div>
+                          <div className="close-button-div"><button onClick={() => setAlert({type:'', message:''})}>x</button></div>
+                        </div>
+                      </div> : null}
+      </div>
       <div className="button-div">
-        <button className="btn btn-block" onClick={() => sendLocation()}><h1>I Want To Cross Here</h1></button>
+        <button onClick={() => sendLocation()}><h1>I Want To Cross Here</h1></button>
       </div>
     </div>
   );
