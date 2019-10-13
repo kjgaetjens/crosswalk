@@ -82,12 +82,12 @@ app.get('/sessions/all', async (req,res) => {
     res.json({"sessions": sessionRecords})
 })
 
-app.get('/sessions/:sessionid', async (req,res) => {
+app.get('/sessionstatus/:session', async (req,res) => {
 
-    const sessionId = parseInt(req.params.sessionid)
+    const session = req.params.session
 
     let sessionRecord = await models.Session.findOne(
-        {where:{id: sessionId}}
+        {where:{param: session}}
     )
 
     res.json(sessionRecord)

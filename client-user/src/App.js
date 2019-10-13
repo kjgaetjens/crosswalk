@@ -1,10 +1,35 @@
-import React,{useState} from 'react';
+import React,{useState, useEffect} from 'react';
 
 
 function App(props) {
 
   const session = props.match.params.session
+
+  const [active, setActive] = useState(false)
   const [alert, setAlert] = useState({type:'', message:''})
+
+  
+  const checkActive = () => {
+    fetch(`http://localhost:3001/sessionstatus/${session}`, {
+      method: 'GET',
+      headers: {'Content-Type': 'application/json'}
+    }).then(response => {
+      if (!response.ok) {
+        setAlert({type:'alert-danger', message:'URL does not exist or is not Active'})
+      }
+      return response
+    }).then(response => {
+      return response.json()
+    }).then(json => {
+      if (json.status === 'ACTIVE') {
+        setActive(true)
+      } else {
+        setAlert({type:'alert-danger', message:'URL does not exist or is not Active'})
+      }
+    }).catch(error => {
+      setAlert({type:'alert-danger', message:'URL does not exist or is not Active'})
+    })
+  }
 
   const sendLocation = () => {
 
@@ -41,6 +66,10 @@ function App(props) {
       navigator.geolocation.getCurrentPosition(success,error)
     }
   }
+
+  useEffect(() => {
+    checkActive()
+  }, [])
   
   return (
     <div className="addLocation">
@@ -55,9 +84,9 @@ function App(props) {
                         </div>
                       </div> : null}
       </div>
-      <div className="button-div">
-        <button onClick={() => sendLocation()}><h1>I Want To Cross Here</h1></button>
-      </div>
+      {active ? <div className="button-div">
+                  <button onClick={() => sendLocation()}><h1>I Want To Cross Here</h1></button>
+                </div> : null}
     </div>
   );
 }
