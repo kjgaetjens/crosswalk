@@ -123,7 +123,6 @@ app.get('/sessions/:sessionid/dashboard/:radius/:minPoints', async (req,res) => 
         return [record.latitude, record.longitude]
     })
 
-    //figure out what the radius represents (coordinates?)
     let clusters = dbscan.run(coordinates, radius, minPoints)
 
     let rawClusterArray = clusters.map(cluster => {
@@ -262,13 +261,7 @@ app.post('/sessions/stop-session', async (req,res) => {
     res.status(200).send() 
 })
 
-//this will be for the admin side
-app.get('/view-locations', (req,res) => {
-    res.send('get test')
-})
 
-
-//set up post to add the lat/long to the db
 app.post('/add-location', async (req,res) => {
     const sessionParam = req.body.sessionname
     const sessionRecord = await models.Session.findOne(
@@ -276,7 +269,6 @@ app.post('/add-location', async (req,res) => {
     )
     const sessionId = await sessionRecord.id
 
-    //not really sure I need to turn this into an object
     const location = new Location(req.body.lat, req.body.long)
 
     let locationRecord = await models.DesiredCoordinate.create({
