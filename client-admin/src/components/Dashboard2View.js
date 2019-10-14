@@ -50,7 +50,7 @@ const Dashboard = (props) => {
         const radius = dashboardParams.radius
         const minPoints = dashboardParams.minPoints
 
-        let result = await axios.get(`http://localhost:3001/sessions/${sessionId}/dashboard/${radius}/${minPoints}`)
+        let result = await axios.get(`${env.serverURL}/sessions/${sessionId}/dashboard/${radius}/${minPoints}`)
         let dashboardObj = result.data
         let clusterRange = 0
         let clusterMin = 0
@@ -94,7 +94,7 @@ const Dashboard = (props) => {
     }
 
     const getRawCsvData = async () => {
-        let result = await axios.get(`http://localhost:3001/sessions/${sessionId}/rawcsv`)
+        let result = await axios.get(`${env.serverURL}/sessions/${sessionId}/rawcsv`)
         let rawCsvDataObj = result.data
 
         setRawCsvData({content: rawCsvDataObj.coordinates})

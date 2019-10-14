@@ -1,5 +1,6 @@
 import React,{useState, useEffect} from 'react';
 import axios from 'axios'
+import * as env from '../env'
 
 function Session(props) {
 
@@ -11,21 +12,21 @@ function Session(props) {
   
     const getSessionInfo = async () => {
         let result = 
-            await axios.get(`http://localhost:3001/sessions/${sessionId}`)
+            await axios.get(`${env.serverURL}/sessions/${sessionId}`)
         let sessionObj = result.data
         
         setSessionInfo({...sessionObj})
     }
 
     const activateSession = async () => {
-        await axios.post(`http://localhost:3001/sessions/start-session`, {sessionId: sessionInfo.id})
+        await axios.post(`${env.serverURL}/sessions/start-session`, {sessionId: sessionInfo.id})
         
         //should wait for a succesful response before executing
         getSessionInfo()
     }
 
     const deactivateSession = async () => {
-        await axios.post(`http://localhost:3001/sessions/stop-session`, {"sessionId": sessionInfo.id})
+        await axios.post(`${env.serverURL}/sessions/stop-session`, {"sessionId": sessionInfo.id})
 
         //should wait for a succesful response before executing
         getSessionInfo()

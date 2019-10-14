@@ -2,6 +2,7 @@ import React, {useState} from 'react'
 import axios from 'axios'
 import {setAuthenticationHeader} from '../utils/authenticate'
 import { connect } from 'react-redux'
+import * as env from '../env'
 
 function Login(props) {
 
@@ -15,7 +16,7 @@ function Login(props) {
     }
 
     const handleLogin = () => {
-        axios.post('http://localhost:3001/login', {
+        axios.post(`${env.serverURL}/login`, {
             username: user.username,
             password: user.password
         }).then(response => {

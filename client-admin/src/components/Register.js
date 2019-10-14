@@ -1,5 +1,6 @@
 import React,{useState} from 'react';
 import axios from 'axios'
+import * as env from '../env'
 
 function Register() {
 
@@ -17,7 +18,7 @@ function Register() {
     const password = newUser.password
     const user = {"username": username, "password": password}
 
-    axios.post('http://localhost:3001/register', user)
+    axios.post(`${env.serverURL}/register`, user)
 
   }
 

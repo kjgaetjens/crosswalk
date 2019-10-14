@@ -1,5 +1,6 @@
 import React,{useState, useEffect} from 'react';
 import axios from 'axios'
+import * as env from '../env'
 
 function Sessions(props) {
 
@@ -17,20 +18,20 @@ function Sessions(props) {
         const status = 'INACTIVE'
         const session = {"param": param, "status": status}
   
-        await axios.post('http://localhost:3001/sessions/add-session', session)
+        await axios.post(`${env.serverURL}/sessions/add-session`, session)
   
         getSessions()
     }
 
     const activateSession = async (sessionId) => {
-        await axios.post(`http://localhost:3001/sessions/start-session`, {sessionId: sessionId})
+        await axios.post(`${env.serverURL}/sessions/start-session`, {sessionId: sessionId})
         
         //should wait for a succesful response before executing
         getSessions()
     }
 
     const deactivateSession = async (sessionId) => {
-        await axios.post(`http://localhost:3001/sessions/stop-session`, {"sessionId": sessionId})
+        await axios.post(`${env.serverURL}/sessions/stop-session`, {"sessionId": sessionId})
 
         //should wait for a succesful response before executing
         getSessions()
@@ -39,7 +40,7 @@ function Sessions(props) {
     //change sessions and session to axios
     const getSessions = async () => {
         let result = 
-            await axios.get('http://localhost:3001/sessions/all')
+            await axios.get(`${env.serverURL}/sessions/all`)
         let sessionObj = result.data
         let sessionArray = sessionObj.sessions
         sessionArray.sort((a, b) => {

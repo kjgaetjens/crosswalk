@@ -3,14 +3,15 @@ import React,{useState, useEffect} from 'react';
 
 function App(props) {
 
-  const session = props.match.params.session
+  const serverURL = 'https://immense-citadel-99283.herokuapp.com';
+  const session = props.match.params.session;
 
   const [active, setActive] = useState(false)
   const [alert, setAlert] = useState({type:'', message:''})
 
   
   const checkActive = () => {
-    fetch(`http://localhost:3001/sessionstatus/${session}`, {
+    fetch(`${serverURL}/sessionstatus/${session}`, {
       method: 'GET',
       headers: {'Content-Type': 'application/json'}
     }).then(response => {
@@ -39,7 +40,7 @@ function App(props) {
       const latitude = position.coords.latitude
       const longitude = position.coords.longitude
 
-      fetch(`http://localhost:3001/add-location`, {
+      fetch(`${serverURL}/add-location`, {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({"sessionname": session, "lat": latitude, "long": longitude})
