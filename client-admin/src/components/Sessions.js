@@ -71,7 +71,7 @@ function Sessions(props) {
                                     <td><a href={`/sessions/${session.id}/dashboard`}>Dashboard</a></td>
                                     <td className="status-text">{session.status}</td>
                                     <td><button className="btn btn-light deactivate" onClick={() => deactivateSession(session.id)}>Deactivate</button></td>
-                                    <td><a href={`http://localhost:3000/${session.param}`} target="_blank">Live Link</a></td>
+                                    <td><a href={`https://walkable.netlify.com/${session.param}`} target="_blank">Live Link</a></td>
                                 </tr>
                             )
                         } else {
@@ -81,7 +81,7 @@ function Sessions(props) {
                                     <td><a href={`/sessions/${session.id}/dashboard`}>Dashboard</a></td>
                                     <td className="status-text">{session.status}</td>
                                     <td><button className="btn btn-primary activate" onClick={() => activateSession(session.id)}>Activate</button></td>
-                                    <td><a href={`http://localhost:3000/${session.param}`} target="_blank">Live Link</a></td>
+                                    <td><a href={`https://walkable.netlify.com/${session.param}`} target="_blank">Live Link</a></td>
                                 </tr>
                             )
                         }
