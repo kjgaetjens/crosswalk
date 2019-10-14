@@ -3,7 +3,7 @@ const cors = require('cors')
 const app = express()
 global.models = require('./models')
 require('dotenv').config()
-const PORT = process.env.PORT
+const PORT = process.env.PORT || 8080
 const GOOGLE_MAPS_API_KEY = process.env.GOOGLE_MAPS_API_KEY
 const axios = require('axios')
 var jwt = require('jsonwebtoken');
