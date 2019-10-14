@@ -69,6 +69,10 @@ label {
     top: 22px;
 }
 
+.dashboardTable table {
+    box-shadow: 0 0 1px black
+}
+
 .centerCoordinateColumn {
     min-width: 250px;
 }
