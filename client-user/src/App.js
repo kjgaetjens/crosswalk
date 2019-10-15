@@ -3,6 +3,9 @@ import React,{useState, useEffect} from 'react';
 
 function App(props) {
 
+  let vh = window.innerHeight * 0.01;
+  document.documentElement.style.setProperty('--vh', `${vh}px`);
+
   const serverURL = 'https://immense-citadel-99283.herokuapp.com';
   const session = props.match.params.session;
 

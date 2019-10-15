@@ -31,6 +31,9 @@ function Login(props) {
 
     return (
         <div className="login">
+            <div class="alert alert-primary" role="alert">
+                To view a demo, log in with username: govemployee and password: test123. Click on the "wewalkhouston" dashboard to view a dashboard with pre-populated data.
+            </div>
             <h1>Log in to Walkable</h1>
             <div className="form-group">
                 <label htmlFor="username">Email address</label>

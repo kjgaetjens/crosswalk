@@ -3,6 +3,7 @@
     justify-content: center;
     align-items: center;
     height: 20vh;
+    height: calc(var(--vh, 1vh) * 20);
 }
 
 .header-div  h1 {
@@ -12,6 +13,7 @@
 
 .alert-div {
     height: 20vh;
+    height: calc(var(--vh, 1vh) * 20);
     display: flex;
     justify-content: center;
 }
@@ -51,6 +53,7 @@
 
 .button-div {
     height: 60vh;
+    height: calc(var(--vh, 1vh) * 60);
     display: flex;
     flex-direction: column;
     align-items: center;
